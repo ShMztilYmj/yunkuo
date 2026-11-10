@@ -204,8 +204,8 @@ mod tests {
         let other = "eepeadgljpkkjpbfecfkijnnliikglpl";
         let settings = json!({
             "extensions": {"settings": {
-                old: {"path": "\\\\?\\D:\\云阔\\resources\\extensions\\webrtc-control", "location": 8},
-                SHIPPED: {"path": "E:\\云阔\\resources\\extensions\\webrtc-control", "location": 8},
+                old: {"path": "\\\\?\\C:\\legacy\\resources\\extensions\\webrtc-control", "location": 8},
+                SHIPPED: {"path": "C:\\fixture\\resources\\extensions\\webrtc-control", "location": 8},
                 other: {"path": "C:\\other-extension", "location": 8}
             }}
         });

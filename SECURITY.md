@@ -2,8 +2,12 @@
 
 ## 报告漏洞
 
-请不要开公开 issue。把细节发到 **1428676755@qq.com**（替换为维护者邮箱），或用 GitHub 的
-[Private vulnerability reporting](https://docs.github.com/code-security/security-advisories/guidance-on-reporting-and-writing/privately-reporting-a-security-vulnerability)。
+请不要开公开 issue。请使用本仓库的
+[Private vulnerability reporting](https://github.com/ShMztilYmj/yunkuo/security/advisories/new)——
+它在 GitHub 内私密提交，只有维护者可见。
+
+如果你没有 GitHub 账号，可以在 issue 里只写「有安全问题，请提供联系方式」，
+维护者会主动回一条私信，不要把细节贴在公开区。
 
 建议包含：受影响版本、复现步骤、预期与实际结果、日志或抓包（请先脱敏）。
 
