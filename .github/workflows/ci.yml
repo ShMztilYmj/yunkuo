@@ -1,4 +1,4 @@
-name: CI
+﻿name: CI
 
 on:
   push:
@@ -11,8 +11,7 @@ concurrency:
 
 jobs:
   frontend:
-    name: 前端（脚本契约 · 类型检查 · 构建）
-    runs-on: windows-latest
+    name: 鍓嶇锛堣剼鏈绾?路 绫诲瀷妫€鏌?路 鏋勫缓锛?    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -30,12 +29,10 @@ jobs:
       - run: pnpm run build
 
   rust:
-    name: 后端（cargo test）
-    runs-on: windows-latest
-    # 编译只需要源码：tauri-build 会逐个校验 externalBin 与 resources 的真实路径，
-    # 而那几样随包资源合计 1.3 GB 且不进仓库。这里把两者在构建期清空，
-    # 让 clippy / cargo test 不依赖下载；打包链路由 packaged-smoke 用真实资源验证。
-    env:
+    name: 鍚庣锛坈argo test锛?    runs-on: windows-latest
+    # 缂栬瘧鍙渶瑕佹簮鐮侊細tauri-build 浼氶€愪釜鏍￠獙 externalBin 涓?resources 鐨勭湡瀹炶矾寰勶紝
+    # 鑰岄偅鍑犳牱闅忓寘璧勬簮鍚堣 1.3 GB 涓斾笉杩涗粨搴撱€傝繖閲屾妸涓よ€呭湪鏋勫缓鏈熸竻绌猴紝
+    # 璁?clippy / cargo test 涓嶄緷璧?181 MB 鐨勬寚绾规祻瑙堝櫒锛涙墦鍖呴摼璺敱 packaged-smoke 鐢ㄧ湡瀹炶祫婧愰獙璇併€?    # 浣嗗唴鏍镐笌瑙勫垯搴撴槸娴嬭瘯鐪熺殑浼氭媺璧锋潵鐨勶紝浠嶆寜閿佹枃浠朵笅杞斤紙绾?34 MB锛夈€?    env:
       TAURI_CONFIG: '{"bundle":{"externalBin":[],"resources":[]}}'
     steps:
       - uses: actions/checkout@v4
@@ -52,13 +49,17 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           workspaces: src-tauri -> target
-      # 格式检查不需要编译，先跑，失败最快。
-      - run: cargo fmt --manifest-path src-tauri/Cargo.toml --check
+      # 鏍煎紡妫€鏌ヤ笉闇€瑕佺紪璇戯紝鍏堣窇锛屽け璐ユ渶蹇€?      - run: cargo fmt --manifest-path src-tauri/Cargo.toml --check
       - run: pnpm install --frozen-lockfile
-      # 编译前置：frontendDist（dist）与 build.rs 读取的服务侧车哈希。
-      - run: pnpm run build
+      # 缂栬瘧鍓嶇疆锛歠rontendDist锛坉ist锛変笌 build.rs 璇诲彇鐨勬湇鍔′晶杞﹀搱甯屻€?      - run: pnpm run build
       - run: pnpm run service:prepare
-      # 只拦正确性问题；既有 160 余条风格告警保持不阻塞，清理后再收紧到 -D warnings。
-      - run: cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets -- -D clippy::correctness
-      # 串行执行；失败项由 scripts/test-rust.mjs 单独重试一次，区分干扰与真实失败。
-      - run: pnpm test
+      # proxy::engine / proxy::core 鐨勭敤渚嬩細鐪熺殑鎷夎捣鍐呮牳骞惰浆鍙戜竴娆¤姹傦紝
+      # 鍐呮牳涓庤鍒欏簱蹇呴』鍏堝湪浣嶏紙debug 鏋勫缓浠?src-tauri/binaries 璇诲彇锛夈€?      - run: pnpm fetch:vendor --only=mihomo,tokscale,geosite,country-mmdb,asn-mmdb
+      # 鍙嫤姝ｇ‘鎬ч棶棰橈紱鏃㈡湁 160 浣欐潯椋庢牸鍛婅淇濇寔涓嶉樆濉烇紝娓呯悊鍚庡啀鏀剁揣鍒?-D warnings銆?      - run: cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets -- -D clippy::correctness
+      # 涓茶鎵ц锛涘け璐ラ」鐢?scripts/test-rust.mjs 鍗曠嫭閲嶈瘯涓€娆★紝鍖哄垎骞叉壈涓庣湡瀹炲け璐ャ€?      - run: pnpm test
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: rust-test-failure
+          path: artifacts/test-rust-failure.log
+          if-no-files-found: ignore
