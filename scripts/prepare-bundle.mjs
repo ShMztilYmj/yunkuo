@@ -24,7 +24,7 @@ if (
     tokenEngine.platforms["win32-x64"].sha256
 ) {
   throw new Error(
-    "统一用量引擎缺失或校验失败，请运行 pnpm agent-engine:prepare",
+    "统一用量引擎缺失或校验失败，请运行 pnpm fetch:vendor --only=tokscale",
   );
 }
 
@@ -36,7 +36,9 @@ if (
     path.join(root, "src-tauri/resources/fingerprint-chromium/chrome.exe"),
   )
 ) {
-  throw new Error("指纹 Chromium 引擎缺失，请先运行 pnpm browser:prepare");
+  throw new Error(
+    "指纹 Chromium 引擎缺失，请先运行 pnpm fetch:vendor --with-browser",
+  );
 }
 const extensionManifest = path.join(
   root,
