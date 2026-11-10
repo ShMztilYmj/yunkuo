@@ -16,6 +16,7 @@
     "fetch:vendor": "node scripts/fetch-vendor.mjs",
     "fetch:vendor:check": "node scripts/fetch-vendor.mjs --check",
     "repo:set": "node scripts/set-repo.mjs",
+    "publish:github": "node scripts/publish-github.mjs",
     "service:prepare": "node scripts/prepare-service.mjs",
     "build:portable": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-portable.ps1",
     "test:ui-resources": "node scripts/test-ui-resources.mjs",
