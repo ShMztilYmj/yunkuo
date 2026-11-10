@@ -202,6 +202,13 @@ pub async fn install(app: &AppHandle) -> Result<()> {
 }
 
 async fn install_unreported(app: &AppHandle) -> Result<()> {
+    // 干净检出的首次构建不内嵌服务哈希（见 build.rs），此时安装脚本里的校验值会是空串，
+    // 直接跑只会得到一句难懂的失败，所以在这里提前拦住并给出可执行的下一步。
+    if env!("YUNKUO_SERVICE_SHA256").is_empty() {
+        return Err(anyhow!(
+            "本次构建未内嵌服务组件哈希：请在源码目录执行 pnpm run service:prepare，然后重新构建云阔，再安装或修复服务"
+        ));
+    }
     let health = super::service::health().await;
     if health.running {
         match super::service::status().await {

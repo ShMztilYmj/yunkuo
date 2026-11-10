@@ -7,7 +7,9 @@ import {
   existsSync,
   mkdirSync,
   readFileSync,
+  rmSync,
   statSync,
+  writeFileSync,
 } from "node:fs";
 import { createHash } from "node:crypto";
 import path from "node:path";
@@ -28,6 +30,14 @@ const sidecar = path.join(
 );
 
 console.log("构建系统服务侧车：yunkuo-service");
+// 干净检出时侧车还不存在，而 tauri-build 会校验 externalBin 的路径必须存在；
+// 先放一个 0 字节占位文件让它通过构建（build.rs 把 0 字节视作缺失，不会内嵌错误哈希），
+// 真实产物生成后立刻覆盖。构建失败时把占位文件清掉，避免留下半成品。
+const placeholder = !existsSync(sidecar);
+if (placeholder) {
+  mkdirSync(path.dirname(sidecar), { recursive: true });
+  writeFileSync(sidecar, "");
+}
 const build = spawnSync(
   "cargo",
   [
@@ -42,9 +52,11 @@ const build = spawnSync(
 );
 if (build.error) throw build.error;
 if (build.status !== 0) {
+  if (placeholder) rmSync(sidecar, { force: true });
   throw new Error(`服务侧车构建失败（退出码 ${build.status}）`);
 }
 if (!existsSync(built)) {
+  if (placeholder) rmSync(sidecar, { force: true });
   throw new Error(`没有找到构建产物：${built}`);
 }
 if (!readFileSync(built).includes(Buffer.from("mihomo"))) {
