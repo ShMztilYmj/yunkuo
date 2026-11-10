@@ -10,7 +10,7 @@ jobs:
     name: 构建免安装包并验证概览页
     runs-on: [self-hosted, windows, desktop]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v4
         with:
           version: 12.11.2
