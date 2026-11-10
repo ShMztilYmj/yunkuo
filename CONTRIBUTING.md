@@ -20,13 +20,21 @@
 
 | 路径 | 内容 | 来源与固定版本 |
 | --- | --- | --- |
-| `src-tauri/resources/fingerprint-chromium/` | 约 425 MB，需含 `chrome.exe` | https://github.com/adryfish/fingerprint-chromium，SHA-256 校验见 THIRD-PARTY-NOTICES.md |
-| `src-tauri/binaries/云阔mihomo-x86_64-pc-windows-msvc.exe` | 约 58 MB | https://github.com/MetaCubeX/mihomo v1.19.32，SHA-256 `04F8D7FC…824E314`，见 THIRD-PARTY-NOTICES.md |
-| `src-tauri/resources/geodata`、`resources/tokscale` | 规则库与用量引擎 | 版本与哈希见 THIRD-PARTY-NOTICES.md、`scripts/native-geodata.json`、`scripts/native-build-tools.json` |
+| `src-tauri/resources/fingerprint-chromium/` | 约 425 MB，需含 `chrome.exe` | https://github.com/adryfish/fingerprint-chromium 148.0.7778.215 |
+| `src-tauri/binaries/云阔mihomo-x86_64-pc-windows-msvc.exe` | 约 58 MB | https://github.com/MetaCubeX/mihomo v1.19.32（amd64-compatible） |
+| `src-tauri/resources/geodata`、`resources/tokscale` | 规则库与用量引擎 | P3TERX/GeoLite.mmdb 2026.11.07、Javis603/tokscale `token-monitor-324d5136` |
+
+一键落地（固定版本 + SHA-256 校验，写入 `scripts/vendor.lock.json`）：
+
+```powershell
+pnpm fetch:vendor:check    # 只看缺什么
+pnpm fetch:vendor          # 下载 mihomo、用量引擎、规则库（约 90 MB）
+pnpm fetch:vendor --with-browser   # 连同 181 MB 的指纹浏览器一起下
+```
 
 服务侧车 `src-tauri/binaries/yunkuo-service-*.exe` 不需要手工放，`pnpm service:prepare` 会编译并复制。
 
-只跑前端和单元测试时，上述资源缺失不影响；执行 `pnpm tauri dev`、打包或涉及指纹浏览器/内核的用例时才需要。
+只跑前端和单元测试时，上述资源缺失不影响；执行 `pnpm tauri dev`、打包或涉及指纹浏览器/内核的用例时才需要，指纹浏览器只在打包安装包时是硬性的。
 
 ## 常用命令
 
@@ -67,6 +75,16 @@ pnpm format             # cargo fmt + prettier --write
 - 版本号在 `package.json`、`src-tauri/Cargo.toml`、`src-tauri/tauri.conf.json` 三处同步。
 - 发布由维护者打 `vX.Y.Z` 标签并附构建产物说明，细节见 README「开发与构建」。
 
+## 许可证与第三方组件
+
+- 你提交的代码按仓库的 [MIT](LICENSE) 授权发布，提交 PR 即表示同意。
+- **不要**把 GPL 代码贴进本仓库。mihomo 是 GPL-3.0，本项目只以独立进程调用它；一旦把它的源码片段、
+  静态链接或改造版本并入主程序，整个仓库就必须转为 GPL-3.0。需要参考其行为时，请按公开文档自行实现并注明出处。
+  其它 copyleft 依赖同理，引入前先在 issue 里讨论。
+- 新增第三方二进制、数据或图标，必须同时更新 [scripts/vendor.lock.json](scripts/vendor.lock.json)（固定版本与 SHA-256）
+  和 [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md)，并把许可全文放进 `licenses/`。
+- 不要提交任何品牌素材以外的新商标资源；引用他人产品名时只用于说明兼容性。
+
 ## 行为准则
 
-参与即表示同意保持友善、就事论事。人身攻击、骚扰、泄露他人账号或密钥的内容会被移除并封禁。
+参与即表示同意 [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)：保持友善、就事论事。人身攻击、骚扰、泄露他人账号或密钥的内容会被移除并封禁。
