@@ -51,16 +51,18 @@ pnpm format             # cargo fmt + prettier --write
 
 ### 编译前置条件
 
-`src-tauri/build.rs` 在编译期就要读取服务侧车的哈希，`tauri-build` 又要校验 `dist` 目录。
-直接跑 `cargo check / clippy / test` 会以 `打包组件缺失，无法计算哈希` panic，**先补这两步**：
+任何 cargo 构建（`check / clippy / test`）之前都要先补齐三样东西，否则编译期会直接 panic：
 
 ```powershell
-pnpm run build            # 生成 dist/
-pnpm run service:prepare  # 编译服务侧车并复制到 src-tauri/binaries/
+pnpm run fetch:vendor --with-browser   # tauri-build 校验 externalBin 与 resources 的路径
+pnpm run build                         # 生成 dist/（tauri-build 校验 frontendDist）
+pnpm run service:prepare               # 编译服务侧车，build.rs 要读它的哈希
 cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets -- -D clippy::correctness
 ```
 
-CI 的后端任务就是这个顺序；本地 `pnpm verify` 之前同样要先跑一次这两条。
+没跑 `service:prepare` 时，`build.rs` 只发一条警告并以空哈希继续编译，主程序仍能启动，
+但「安装/修复 TUN 服务」会明确提示你先补这一步；`fetch:vendor` 缺失则是硬失败。
+CI 的后端任务就是这个顺序，本地 `pnpm verify` 之前同样要先跑完这三条。
 
 ## 代码地图
 
