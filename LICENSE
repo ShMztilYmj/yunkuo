@@ -19,14 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
----
-
-本仓库同时包含或分发第三方组件，各自适用其原始许可，完整清单见
-THIRD-PARTY-NOTICES.md 与 licenses/ 目录。其中：
-
-- mihomo（代理内核）以独立进程分发，采用 GPL-3.0，见 licenses/Mihomo-GPL-3.0.txt。
-- Fingerprint Chromium 采用 BSD-3-Clause，见 licenses/Fingerprint-Chromium-BSD.txt。
-- Wintun、Tokscale、Agent HUD、CCBaga、LobeHub 图标等见 THIRD-PARTY-NOTICES.md。
-
-上述许可是独立聚合关系，不改变本仓库自身源码的 MIT 授权。

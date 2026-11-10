@@ -1,3 +1,14 @@
+# 第三方声明
+
+本仓库源码采用 MIT（见 `LICENSE`），随包分发或参考的第三方组件各自适用其原始许可。
+根目录 `LICENSE` 只放 MIT 正文，是为了让 GitHub 能正确识别许可类型；聚合关系的说明放在这里：
+
+- mihomo（代理内核）以独立进程分发，GPL-3.0，见 `licenses/Mihomo-GPL-3.0.txt`。
+- Fingerprint Chromium，BSD-3-Clause，见 `licenses/Fingerprint-Chromium-BSD.txt`。
+- 其余 Wintun、Tokscale、Agent HUD、CCBaga、LobeHub 图标等，见下面对应小节。
+
+以上均为独立聚合，不改变本仓库自身源码的 MIT 授权。
+
 # CCBaga 功能整合
 
 ## Codex 自动续跑
