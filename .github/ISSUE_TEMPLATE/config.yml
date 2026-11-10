@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
   - name: 安全漏洞
-    url: https://github.com/OWNER/yunkuo/security/advisories/new
+    url: https://github.com/ShMztilYmj/yunkuo/security/advisories/new
     about: 请勿用公开 issue 报告漏洞，见 SECURITY.md
   - name: 使用问题与讨论
-    url: https://github.com/OWNER/yunkuo/discussions
+    url: https://github.com/ShMztilYmj/yunkuo/discussions
     about: 安装、配置、订阅相关问题请到 Discussions

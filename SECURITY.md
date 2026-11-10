@@ -2,7 +2,7 @@
 
 ## 报告漏洞
 
-请不要开公开 issue。把细节发到 **security@TARGET_DOMAIN**（替换为维护者邮箱），或用 GitHub 的
+请不要开公开 issue。把细节发到 **1428676755@qq.com**（替换为维护者邮箱），或用 GitHub 的
 [Private vulnerability reporting](https://docs.github.com/code-security/security-advisories/guidance-on-reporting-and-writing/privately-reporting-a-security-vulnerability)。
 
 建议包含：受影响版本、复现步骤、预期与实际结果、日志或抓包（请先脱敏）。
