@@ -168,7 +168,9 @@ function status(item) {
   const isDir = item.kind === "zip-dir";
   const actual = present && !isDir ? hashOf(dest) : null;
   const wanted = item.sha256 || null;
-  const verified = isDir ? present : matches(actual, wanted);
+  // 文件不存在时一律算未就绪：没有固定哈希的滚动条目（geosite、指纹浏览器）
+  // 否则会被 matches(null, null) 判成已就绪而永远不下载。
+  const verified = present && (isDir ? true : matches(actual, wanted));
   return {
     id: item.id,
     title: item.title,
