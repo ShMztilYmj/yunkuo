@@ -49,5 +49,9 @@
     "typescript": "~6.0.3",
     "vite": "^8.0.16"
   },
-  "packageManager": "pnpm@12.11.2"
+  "packageManager": "pnpm@12.11.2",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ShMztilYmj/yunkuo.git"
+  }
 }

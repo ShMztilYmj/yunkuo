@@ -1,6 +1,6 @@
 # 云阔
 
-[![CI](https://github.com/OWNER/yunkuo/actions/workflows/ci.yml/badge.svg)](https://github.com/OWNER/yunkuo/actions/workflows/ci.yml)
+[![CI](https://github.com/ShMztilYmj/yunkuo/actions/workflows/ci.yml/badge.svg)](https://github.com/ShMztilYmj/yunkuo/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 Windows 桌面应用，使用 React、Vite 和 Tauri 2。仅支持 Windows 10 1809+ / 11 x64。
