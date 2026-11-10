@@ -53,7 +53,7 @@ jobs:
       # 编译前置条件之一：tauri-build 在编译期逐个校验 externalBin 与 resources 的路径，
       # mihomo 内核、指纹浏览器目录、规则库缺任何一项都会让 clippy/test 直接 panic。
       # 以 vendor.lock.json 为缓存键：锁文件不变时命中缓存，只补下当时缺失的那几项。
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         with:
           path: |
             src-tauri/resources/fingerprint-chromium
