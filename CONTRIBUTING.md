@@ -51,18 +51,20 @@ pnpm format             # cargo fmt + prettier --write
 
 ### 编译前置条件
 
-任何 cargo 构建（`check / clippy / test`）之前都要先补齐三样东西，否则编译期会直接 panic：
+纯 Rust 编译（`check / clippy / test`）只需要两样东西：
 
 ```powershell
-pnpm run fetch:vendor --with-browser   # tauri-build 校验 externalBin 与 resources 的路径
-pnpm run build                         # 生成 dist/（tauri-build 校验 frontendDist）
-pnpm run service:prepare               # 编译服务侧车，build.rs 要读它的哈希
+pnpm run build            # 生成 dist/，tauri-build 会校验 frontendDist
+pnpm run service:prepare  # 编译服务侧车，build.rs 要读它的哈希
 cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets -- -D clippy::correctness
 ```
 
-没跑 `service:prepare` 时，`build.rs` 只发一条警告并以空哈希继续编译，主程序仍能启动，
-但「安装/修复 TUN 服务」会明确提示你先补这一步；`fetch:vendor` 缺失则是硬失败。
-CI 的后端任务就是这个顺序，本地 `pnpm verify` 之前同样要先跑完这三条。
+缺 `dist` 是硬失败；缺侧车时 `build.rs` 只发一条警告并以空哈希继续编译，主程序照常启动，
+但「安装/修复 TUN 服务」会明确提示你先补这一步。
+
+随包资源（mihomo、指纹浏览器、规则库）只在**运行与打包**时需要，用 `pnpm fetch:vendor` 落地。
+CI 的 clippy/test 通过 `TAURI_CONFIG` 在构建期清空 `bundle.externalBin` 与 `bundle.resources`，
+所以不需要下载那 1.3 GB；打包链路由 `packaged-smoke` 用真实资源验证。
 
 ## 代码地图
 
