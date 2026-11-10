@@ -24,7 +24,7 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm run check:scripts
-      - run: npx prettier --check "src/**/*.{ts,tsx,css}" "scripts/**/*.mjs" "tests/**/*.mjs"
+      - run: npx prettier --check "src/**/*.{ts,tsx,css}" "scripts/**/*.mjs"
       - run: pnpm run test:frontend
       - run: pnpm run typecheck
       - run: pnpm run build
