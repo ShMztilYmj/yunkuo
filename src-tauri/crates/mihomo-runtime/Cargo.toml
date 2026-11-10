@@ -7,7 +7,7 @@ description = "Pinned mihomo child-process lifecycle for desktop and Windows ser
 
 [dependencies]
 anyhow = "1"
-parking_lot = "0.12"
+parking_lot = "0.13"
 reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
 ring = "0.17"
 serde = { version = "1", features = ["derive"] }
