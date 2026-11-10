@@ -47,13 +47,15 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           workspaces: src-tauri -> target
-      # 格式与 clippy 不依赖前端产物，放在构建之前先失败。
+      # 格式检查不需要编译，先跑，失败最快。
       - run: cargo fmt --manifest-path src-tauri/Cargo.toml --check
-      # 只拦正确性问题；既有 163 条风格告警保持不阻塞，清理后再收紧到 -D warnings。
-      - run: cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets -- -D clippy::correctness
       - run: pnpm install --frozen-lockfile
-      # tauri-build 会校验 frontendDist，build.rs 又依赖服务侧车的哈希，两者都必须先就位。
+      # 编译前置条件：tauri-build 校验 frontendDist（dist），build.rs 读取服务侧车哈希
+      # （src-tauri/binaries/yunkuo-service-*.exe）。两者缺一，clippy 与 cargo test 都会
+      # 在编译期直接 panic，所以必须在任何 cargo 构建之前生成。
       - run: pnpm run build
       - run: pnpm run service:prepare
+      # 只拦正确性问题；既有 160 余条风格告警保持不阻塞，清理后再收紧到 -D warnings。
+      - run: cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets -- -D clippy::correctness
       # 串行执行；失败项由 scripts/test-rust.mjs 单独重试一次，区分干扰与真实失败。
       - run: pnpm test
