@@ -1,4 +1,4 @@
-﻿# CCBaga 功能整合
+# CCBaga 功能整合
 
 ## Codex 自动续跑
 
@@ -8,7 +8,9 @@
 
 参考版本：30a171f5191fbb65dc24e4b1a0392d998f7c5719。
 
-身份归档认证流 `src-tauri/src/environment/codec.rs` 与账号键白名单 `identity_keys.rs` 来自或改编自 CCBaga，Copyright (c) 2026 CCBaga contributors，MIT；完整许可见 `licenses/CCBaga-MIT.txt`。浏览器参数和环境核验流程参考该项目，并针对本项目的 Windows/原生代理/WFP 架构实现。
+身份归档认证流 `src-tauri/src/platform/archive_codec.rs` 与账号键白名单 `src-tauri/src/ai/identity/identity_keys.rs` 来自或改编自 CCBaga，Copyright (c) 2026 CCBaga contributors，MIT；完整许可见 `licenses/CCBaga-MIT.txt`。浏览器参数和环境核验流程参考该项目，并针对本项目的 Windows/原生代理/WFP 架构实现。
+
+随包资源的固定版本、下载地址与 SHA-256 统一记录在 `scripts/vendor.lock.json`，可用 `pnpm fetch:vendor` 按锁定值落地。
 
 可选 Fingerprint Chromium 引擎来自 https://github.com/adryfish/fingerprint-chromium ，使用固定版本和 SHA-256 校验；BSD-3-Clause 许可见 `licenses/Fingerprint-Chromium-BSD.txt`，浏览器自身的 Chromium/其他第三方声明随其目录保留。
 
@@ -20,7 +22,7 @@
 
 上游：https://github.com/jazzenchen/agent-hud-open
 
-参考版本：7ddd27e9e4d75bb627f2e8fb7498b9166238dc1b。Apache-2.0，完整许可见 `licenses/AgentHUD-Apache-2.0.txt`。本项目参考其本地优先的统计口径、额度快照有效性与明确事件驱动的会话生命周期规则，以 Rust/React 实现 Windows 版本，主要位于 `src-tauri/src/aimon/activity.rs`、`src-tauri/src/ai_monitor.rs` 与 `src/services/aiStats.ts`。未移植其 Swift 窗口系统或 Clawd 精灵图。
+参考版本：7ddd27e9e4d75bb627f2e8fb7498b9166238dc1b。Apache-2.0，完整许可见 `licenses/AgentHUD-Apache-2.0.txt`。本项目参考其本地优先的统计口径、额度快照有效性与明确事件驱动的会话生命周期规则，以 Rust/React 实现 Windows 版本，主要位于 `src-tauri/src/ai/aimon/activity.rs`、`src-tauri/src/ai/monitor.rs` 与 `src/features/ai/services/aiStats.ts`。未移植其 Swift 窗口系统或 Clawd 精灵图。
 
 ## Agent Bot 动效图标
 

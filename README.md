@@ -1,11 +1,26 @@
 # 云阔
 
-[![CI](https://github.com/OWNER/REPO/actions/workflows/ci.yml/badge.svg)](https://github.com/OWNER/REPO/actions/workflows/ci.yml)
+[![CI](https://github.com/OWNER/yunkuo/actions/workflows/ci.yml/badge.svg)](https://github.com/OWNER/yunkuo/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 Windows 桌面应用，使用 React、Vite 和 Tauri 2。仅支持 Windows 10 1809+ / 11 x64。
 
-参与开发前请先读 [CONTRIBUTING.md](CONTRIBUTING.md)——随包的 Fingerprint Chromium、mihomo 内核与规则库不入库，需要本地放置。安全漏洞请按 [SECURITY.md](SECURITY.md) 私密上报，不要开公开 issue。
+本机一体化的代理与环境工作台：内核托管与 TUN、指纹浏览器、AI 工具账号与用量、系统环境检测与修复，
+全部在本机进程内完成，不依赖任何云端服务。
+
+参与开发前请先读 [CONTRIBUTING.md](CONTRIBUTING.md)——随包的 Fingerprint Chromium、mihomo 内核与规则库不入库，
+用 `pnpm fetch:vendor` 按固定版本拉取。安全漏洞请按 [SECURITY.md](SECURITY.md) 私密上报，不要开公开 issue。
+
+## 快速开始
+
+```powershell
+pnpm install --frozen-lockfile
+pnpm fetch:vendor            # mihomo 内核 + 用量引擎 + 规则库（约 90 MB）
+pnpm tauri dev               # 需要指纹浏览器功能时再加 --with-browser
+pnpm verify                  # 提交前最低门槛
+```
+
+打包安装包前先确认 `pnpm fetch:vendor:check` 全部就绪，再执行 `pnpm tauri build`。
 
 主窗口最小 **1140 × 700**（`src-tauri/tauri.conf.json` 的 `minWidth` / `minHeight`）：低于这个宽度时，能力库页面的表格（最小 850 px）加上侧边栏（218 px）和页边距就会横向滚动，所以窗口不允许再缩。窗口尺寸按逻辑像素计算，125% 缩放下相当于约 1430 物理像素宽。
 
@@ -92,11 +107,24 @@ Rust 用例默认串行（`--test-threads=1`）：代理内核与协作用例会
 
 ## 许可
 
-本仓库源码采用 [MIT](LICENSE)。随包分发的第三方组件各自保留原许可：mihomo 为 GPL-3.0 且以独立进程运行，Fingerprint Chromium 为 BSD-3-Clause，另有 Wintun、Tokscale、Agent HUD、CCBaga 等，完整清单与版本哈希见 [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) 和 `licenses/`。
+本仓库源码采用 [MIT](LICENSE)。随包分发的第三方组件各自保留原许可：mihomo 为 GPL-3.0 且以独立进程运行，Fingerprint Chromium 为 BSD-3-Clause，另有 Wintun、Tokscale、Agent HUD、CCBaga 等，完整清单与版本哈希见 [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) 和 `licenses/`，随包资源的固定版本与 SHA-256 见 [scripts/vendor.lock.json](scripts/vendor.lock.json)。
 
 二次分发时请连同 `licenses/`、`THIRD-PARTY-NOTICES.md` 与内核二进制一并提供，并保留 mihomo 的对应源码获取方式（https://github.com/MetaCubeX/mihomo）。
 
 ## 致谢
 
 功能与交互参考了 CCBaga、codex-auto-resume-windows、Agent HUD、Tokscale、Fingerprint Chromium、mihomo 等上游项目，详见 [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md)。
+
+## 免责声明
+
+- 本项目用于在本机管理网络代理、开发环境与自有账号的使用情况，**不提供**任何节点、订阅、账号，也不包含绕过计费或风控的功能。
+- 使用本项目需自行遵守所在地法律法规，以及各上游服务（Anthropic、OpenAI、Cursor、DeepSeek 等）的服务条款；账号权益、风控与合规风险由使用者承担。
+- 指纹浏览器、代理接管、TUN 等功能请仅用于自有环境、本地调试或已获授权的测试。
+- 作者与上述公司无隶属、赞助或背书关系；因使用本项目产生的任何直接或间接损失，作者不承担责任。
+
+## 商标
+
+「云阔 / Yunkuo」是本项目的名称。Claude、Codex、Cursor、Antigravity、OpenCode、Kimi、Grok、DeepSeek、Windows 等名称与标识归各自所有者所有，
+本项目仅在说明兼容性或引用上游资源时使用，不表示任何关联或背书。
+
 

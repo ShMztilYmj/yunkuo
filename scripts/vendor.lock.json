@@ -1,0 +1,67 @@
+{
+  "note": "随包第三方资源的固定来源。版本变更时同时更新本文件与 THIRD-PARTY-NOTICES.md。sha256 为最终落地文件的哈希（大写十六进制）；remoteSha256 指向上游随发布提供的校验文件，用于滚动更新的数据。",
+  "items": [
+    {
+      "id": "mihomo",
+      "title": "mihomo 代理内核（GPL-3.0，独立进程）",
+      "kind": "zip-file",
+      "url": "https://github.com/MetaCubeX/mihomo/releases/download/v1.19.32/mihomo-windows-amd64-compatible-v1.19.32.zip",
+      "find": "\\.exe$",
+      "dest": "src-tauri/binaries/云阔mihomo-x86_64-pc-windows-msvc.exe",
+      "sha256": "04F8D7FC2B314771E1ECBF15951D59F0E1CB7914503C88CFB6972FF6A824E314",
+      "license": "GPL-3.0 · licenses/Mihomo-GPL-3.0.txt",
+      "source": "https://github.com/MetaCubeX/mihomo"
+    },
+    {
+      "id": "tokscale",
+      "title": "统一用量引擎（MIT）",
+      "kind": "file",
+      "url": "https://github.com/Javis603/tokscale/releases/download/token-monitor-324d5136/tokscale-win32-x64.exe",
+      "dest": "src-tauri/resources/tokscale/tokscale.exe",
+      "sha256": "887113d6adeb4aa15bb298e80d316a1dc1c961d4aa469cec64533ac606b9d173",
+      "license": "MIT · licenses/Tokscale-MIT.txt",
+      "source": "https://github.com/junhoyeo/tokscale"
+    },
+    {
+      "id": "geosite",
+      "title": "geosite 域名规则库",
+      "kind": "file",
+      "url": "https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat",
+      "remoteSha256": "https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat.sha256sum",
+      "dest": "src-tauri/resources/geodata/geosite.dat",
+      "sha256": null,
+      "note": "上游按日滚动发布，哈希不固定，下载时用上游 .sha256sum 校验"
+    },
+    {
+      "id": "country-mmdb",
+      "title": "GeoLite2 Country 库（MaxMind / CC BY-SA 4.0）",
+      "kind": "file",
+      "url": "https://github.com/P3TERX/GeoLite.mmdb/releases/download/2026.11.07/GeoLite2-Country.mmdb",
+      "dest": "src-tauri/resources/geodata/Country.mmdb",
+      "sha256": "2C2D05C474BAEB669298CCE912A6236B5ECC4E50F0316A93E01BA5CF22183600",
+      "source": "https://github.com/P3TERX/GeoLite.mmdb"
+    },
+    {
+      "id": "asn-mmdb",
+      "title": "GeoLite2 ASN 库（MaxMind / CC BY-SA 4.0）",
+      "kind": "file",
+      "url": "https://github.com/P3TERX/GeoLite.mmdb/releases/download/2026.11.07/GeoLite2-ASN.mmdb",
+      "dest": "src-tauri/resources/geodata/ASN.mmdb",
+      "sha256": "21A6903ECC285CE3D187CB7F688B4F7AC52FEE425C479C8E377D5B1C0127537A",
+      "source": "https://github.com/P3TERX/GeoLite.mmdb"
+    },
+    {
+      "id": "fingerprint-chromium",
+      "title": "Fingerprint Chromium 148.0.7778.215（BSD-3-Clause）",
+      "kind": "zip-dir",
+      "url": "https://github.com/adryfish/fingerprint-chromium/releases/download/148.0.7778.215/ungoogled-chromium_148.0.7778.215-1.1_windows_x64.zip",
+      "find": "chrome\\.exe$",
+      "dest": "src-tauri/resources/fingerprint-chromium",
+      "sha256": null,
+      "optional": true,
+      "note": "约 181 MB。解压后按 chrome.exe 所在目录整体复制；指纹浏览器与打包安装包必装，日常改界面可以不装",
+      "license": "BSD-3-Clause · licenses/Fingerprint-Chromium-BSD.txt",
+      "source": "https://github.com/adryfish/fingerprint-chromium"
+    }
+  ]
+}
