@@ -19,7 +19,7 @@ serde_json = "1"
 serde_yaml = "0.9"
 uuid = { version = "1", features = ["v4"] }
 # 特性表与主程序保持一致：这里是同一批模块编译出来的，缺一个特性就会编译失败。
-windows = { version = "0.61", features = [
+windows = { version = "0.62", features = [
   "Win32_Foundation",
   "Win32_System_Time",
   "Win32_System_Registry",
