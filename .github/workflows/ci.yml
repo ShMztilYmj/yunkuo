@@ -50,9 +50,18 @@ jobs:
       # 格式检查不需要编译，先跑，失败最快。
       - run: cargo fmt --manifest-path src-tauri/Cargo.toml --check
       - run: pnpm install --frozen-lockfile
-      # 编译前置条件：tauri-build 校验 frontendDist（dist），build.rs 读取服务侧车哈希
-      # （src-tauri/binaries/yunkuo-service-*.exe）。两者缺一，clippy 与 cargo test 都会
-      # 在编译期直接 panic，所以必须在任何 cargo 构建之前生成。
+      # 编译前置条件之一：tauri-build 在编译期逐个校验 externalBin 与 resources 的路径，
+      # mihomo 内核、指纹浏览器目录、规则库缺任何一项都会让 clippy/test 直接 panic。
+      # 以 vendor.lock.json 为缓存键：锁文件不变时命中缓存，只补下当时缺失的那几项。
+      - uses: actions/cache@v4
+        with:
+          path: |
+            src-tauri/resources/fingerprint-chromium
+            src-tauri/resources/geodata
+            src-tauri/resources/tokscale
+          key: vendor-${{ hashFiles('scripts/vendor.lock.json') }}
+      - run: pnpm fetch:vendor --with-browser
+      # 编译前置条件之二：frontendDist（dist）与 build.rs 读取的服务侧车哈希。
       - run: pnpm run build
       - run: pnpm run service:prepare
       # 只拦正确性问题；既有 160 余条风格告警保持不阻塞，清理后再收紧到 -D warnings。
