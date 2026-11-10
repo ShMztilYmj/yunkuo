@@ -49,6 +49,19 @@ pnpm format             # cargo fmt + prettier --write
 
 `pnpm verify` 失败不要提 PR；CI 执行同一组命令。Rust 用例默认串行，会占用真实端口并拉起真实进程。
 
+### 编译前置条件
+
+`src-tauri/build.rs` 在编译期就要读取服务侧车的哈希，`tauri-build` 又要校验 `dist` 目录。
+直接跑 `cargo check / clippy / test` 会以 `打包组件缺失，无法计算哈希` panic，**先补这两步**：
+
+```powershell
+pnpm run build            # 生成 dist/
+pnpm run service:prepare  # 编译服务侧车并复制到 src-tauri/binaries/
+cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets -- -D clippy::correctness
+```
+
+CI 的后端任务就是这个顺序；本地 `pnpm verify` 之前同样要先跑一次这两条。
+
 ## 代码地图
 
 | 目录 | 内容 |
