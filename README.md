@@ -15,9 +15,10 @@ Windows 桌面应用，使用 React、Vite 和 Tauri 2。仅支持 Windows 10 18
 
 ```powershell
 pnpm install --frozen-lockfile
-pnpm fetch:vendor            # mihomo 内核 + 用量引擎 + 规则库（约 90 MB）
-pnpm tauri dev               # 需要指纹浏览器功能时再加 --with-browser
-pnpm verify                  # 提交前最低门槛
+pnpm fetch:vendor                    # mihomo 内核 + 用量引擎 + 规则库（约 90 MB）
+pnpm fetch:vendor --with-browser     # 另加 181 MB 指纹浏览器，打包安装包必需
+pnpm tauri dev
+pnpm verify                          # 提交前最低门槛
 ```
 
 打包安装包前先确认 `pnpm fetch:vendor:check` 全部就绪，再执行 `pnpm tauri build`。
