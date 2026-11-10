@@ -1,0 +1,178 @@
+html[data-surface="tray"],
+html[data-surface="tray"] body {
+  background: transparent;
+}
+.tray-viewport {
+  width: 100dvw;
+  height: 100dvh;
+  padding: 10px;
+  background: transparent;
+}
+
+/* 牌面比例 2.5 : 3.5（窗口 272 × 381，卡片 252 × 361）。 */
+.tray-card {
+  position: relative;
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--workspace);
+  box-shadow: 0 10px 26px #00000018;
+}
+/* 牌的内框：离边 5px 的一圈细线，只做视觉，不挡点击。 */
+.tray-card::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border: 1px solid color-mix(in srgb, var(--color-zinc-400) 14%, transparent);
+  border-radius: 14px;
+  pointer-events: none;
+}
+
+.tray-header {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 7px;
+  padding: 16px 18px 0;
+}
+.tray-header h1 {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.5px;
+}
+.tray-core {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--muted);
+  font-size: 10px;
+  white-space: nowrap;
+}
+.tray-core i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--muted);
+}
+.tray-core.is-online i {
+  background: #349974;
+}
+
+.tray-content {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 14px 14px;
+}
+
+/* 牌心：花色位放一枚小标志，下面是方案 / 开关 / 流量三行。 */
+.tray-figure {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+}
+.tray-suit {
+  display: grid;
+  place-items: center;
+  color: var(--color-zinc-300);
+  opacity: 0.5;
+}
+.tray-figure strong {
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: 1px;
+  color: var(--color-zinc-100);
+}
+.tray-figure strong.is-idle {
+  color: var(--muted);
+  font-weight: 500;
+}
+.tray-flags {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  color: var(--muted);
+  font-size: 10.5px;
+}
+.tray-flags span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.tray-flags i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--muted) 40%, transparent);
+}
+.tray-flags i.is-on {
+  background: #349974;
+}
+.tray-traffic {
+  margin: 0;
+  color: var(--muted);
+  font-size: 10.5px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.2px;
+  white-space: pre;
+}
+
+.tray-open {
+  flex-shrink: 0;
+  min-height: 46px;
+  border-radius: 12px;
+  background: var(--color-accent);
+  color: var(--color-accent-foreground);
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+.tray-open:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.tray-exit {
+  flex-shrink: 0;
+  min-height: 40px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  color: var(--color-zinc-300);
+  font-size: 12.5px;
+  letter-spacing: 0.5px;
+}
+.tray-exit:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-red-400) 7%, transparent);
+  border-color: color-mix(in srgb, var(--color-red-400) 26%, var(--line));
+  color: var(--color-red-400);
+}
+
+.tray-card button:disabled {
+  opacity: 0.5;
+}
+.tray-message {
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: 9px;
+  background: var(--surface-soft);
+  color: var(--color-zinc-400);
+  font-size: 10.5px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.tray-message.is-error {
+  background: color-mix(in srgb, var(--color-red-400) 7%, var(--workspace));
+  color: var(--color-red-400);
+}
+.tray-card button:focus-visible {
+  outline-offset: 2px;
+}

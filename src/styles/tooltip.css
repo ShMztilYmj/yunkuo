@@ -1,0 +1,115 @@
+.app-tooltip {
+  --tooltip-background: #30302e;
+  --tooltip-foreground: #faf9f6;
+  --tooltip-border: #ffffff12;
+  position: fixed;
+  z-index: 30000;
+  width: max-content;
+  max-width: min(320px, calc(100vw - 20px));
+  border: 1px solid var(--tooltip-border);
+  border-radius: 10px;
+  background: var(--tooltip-background);
+  color: var(--tooltip-foreground);
+  box-shadow:
+    0 4px 12px #00000014,
+    0 12px 32px #00000012;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.65;
+  letter-spacing: 0.1px;
+  cursor: default;
+  user-select: text;
+  animation: tooltip-appear 130ms ease-out;
+}
+html[data-theme="dark"] .app-tooltip {
+  --tooltip-background: #ecebe7;
+  --tooltip-foreground: #272724;
+  --tooltip-border: #ffffff30;
+  box-shadow:
+    0 4px 12px #0003,
+    0 12px 32px #0003;
+}
+.app-tooltip-content {
+  position: relative;
+  max-height: min(240px, calc(100vh - 20px));
+  overflow-y: auto;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  padding: 8px 12px;
+  border-radius: inherit;
+}
+.app-tooltip-arrow {
+  position: absolute;
+  left: var(--tooltip-arrow-x);
+  width: 7px;
+  height: 7px;
+  background: var(--tooltip-background);
+  transform: translateX(-50%) rotate(45deg);
+  pointer-events: none;
+}
+.app-tooltip[data-side="bottom"] .app-tooltip-arrow {
+  top: -4px;
+  border-left: 1px solid var(--tooltip-border);
+  border-top: 1px solid var(--tooltip-border);
+}
+.app-tooltip[data-side="top"] .app-tooltip-arrow {
+  bottom: -4px;
+  border-right: 1px solid var(--tooltip-border);
+  border-bottom: 1px solid var(--tooltip-border);
+}
+.app-tooltip[data-side="right"] .app-tooltip-arrow {
+  left: -4px;
+  top: var(--tooltip-arrow-y);
+  transform: translateY(-50%) rotate(45deg);
+  border-left: 1px solid var(--tooltip-border);
+  border-bottom: 1px solid var(--tooltip-border);
+}
+.app-tooltip[data-side="left"] .app-tooltip-arrow {
+  left: auto;
+  right: -4px;
+  top: var(--tooltip-arrow-y);
+  transform: translateY(-50%) rotate(45deg);
+  border-right: 1px solid var(--tooltip-border);
+  border-top: 1px solid var(--tooltip-border);
+}
+.app-tooltip-title {
+  font-size: 12px;
+  font-weight: 600;
+}
+.app-tooltip-detail {
+  margin-top: 4px;
+  white-space: pre-line;
+  font-size: 11px;
+  line-height: 1.7;
+  opacity: 0.8;
+}
+html[data-surface="hud"] .app-tooltip {
+  --tooltip-background: var(--workspace);
+  --tooltip-foreground: var(--color-zinc-100);
+  --tooltip-border: var(--line);
+  max-width: min(246px, calc(100vw - 20px));
+  border-radius: 12px;
+  box-shadow:
+    0 4px 12px #00000012,
+    0 10px 24px #0000000e;
+}
+html[data-surface="hud"] .app-tooltip-content {
+  padding: 10px 13px;
+}
+html[data-surface="hud"][data-theme="dark"] .app-tooltip {
+  box-shadow: 0 5px 18px #0005;
+}
+@keyframes tooltip-appear {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-tooltip {
+    animation: none;
+  }
+}

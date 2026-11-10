@@ -1,0 +1,195 @@
+/* ---------- 维护页 ----------
+   版式跟设置页完全对齐：左边是常驻的分类栏，右边是内容列 —— 一次只显示一个步骤，
+   点分类栏换页。分类栏直接复用 `.settings-rail` 那一套类（图标 / 标题 / 副标题 /
+   选中态），内容列也用 `.settings-content`，切换步骤时的淡入与设置页一致。
+
+   页面骨架仍走 page-head.css 的变量，页头交给 <PageHeader />，不自己写
+   max-width 与 padding。 */
+
+.maintenance-page {
+  /* 分类栏样式来自 settings.css，需要它那两个强调色变量；按本页既有的
+     代理模块强调色映射，亮暗主题由 app.css 里的 --proxy-page-accent 切换。 */
+  --settings-accent: var(--proxy-page-accent);
+  --settings-accent-strong: var(--proxy-page-accent-strong);
+  display: flex;
+  width: 100%;
+  max-width: var(--page-max);
+  min-height: 100%;
+  margin-inline: auto;
+  flex-direction: column;
+  gap: var(--page-gap);
+  padding: var(--page-pad-top) var(--page-pad-x) var(--page-pad-bottom);
+}
+
+/* 列宽与间距取设置页的 .settings-body：两页的分类栏必须一样宽才不跳动。 */
+.maintenance-body {
+  display: grid;
+  grid-template-columns: 214px minmax(0, 1fr);
+  align-items: start;
+  gap: 22px;
+  min-width: 0;
+}
+
+/* 一步一页后正文只有一张卡，限一下行宽，宽屏上不至于把要点拉成一条长线。 */
+.maintenance-page .settings-content {
+  max-width: 960px;
+}
+
+/* 分类栏右侧的步骤序号：设置页那一格放的是状态点，这里放 1~5。 */
+.maintenance-rail-order {
+  color: var(--muted);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.settings-rail-item[aria-current="page"] .maintenance-rail-order {
+  color: var(--settings-accent-strong);
+}
+
+/* ---------- 单个步骤页 ---------- */
+
+.maintenance-step {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px 20px 20px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: 0 2px 6px #00000002;
+}
+
+.maintenance-step-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.maintenance-step-index {
+  display: inline-flex;
+  width: 24px;
+  height: 24px;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--proxy-page-accent) 14%, transparent);
+  color: var(--proxy-page-accent-strong);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.maintenance-step-copy {
+  min-width: 0;
+}
+
+.maintenance-step-copy h2 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  color: var(--color-zinc-200);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+}
+
+.maintenance-step-copy h2 svg {
+  width: 15px;
+  height: 15px;
+  color: var(--proxy-page-accent-strong);
+}
+
+.maintenance-step-copy p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 11.5px;
+  line-height: 1.6;
+}
+
+.maintenance-step-go {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  padding: 6px 11px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--color-zinc-300);
+  font-size: 11px;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.maintenance-step-go:hover {
+  border-color: color-mix(in srgb, var(--proxy-page-accent) 45%, var(--line));
+  color: var(--proxy-page-accent-strong);
+}
+
+.maintenance-step-go > svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* ---------- 上一步 / 下一步 ---------- */
+
+.maintenance-pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.maintenance-pager-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--color-zinc-400);
+  font-size: 11.5px;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.maintenance-pager-button:hover {
+  border-color: color-mix(in srgb, var(--proxy-page-accent) 45%, var(--line));
+  color: var(--proxy-page-accent-strong);
+}
+
+.maintenance-pager-button[data-variant="next"] {
+  border-color: color-mix(in srgb, var(--proxy-page-accent) 32%, var(--line));
+  background: color-mix(in srgb, var(--proxy-page-accent) 10%, var(--surface));
+  color: var(--proxy-page-accent-strong);
+}
+
+.maintenance-pager-button > svg {
+  width: 13px;
+  height: 13px;
+}
+
+/* 窄窗口：与设置页同一个断点，分类栏变成三列按钮组（样式来自 settings.css），
+   内容列落到下面。 */
+@media (max-width: 920px) {
+  .maintenance-body {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .maintenance-rail-order {
+    display: none;
+  }
+}

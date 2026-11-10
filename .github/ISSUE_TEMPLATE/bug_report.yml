@@ -1,0 +1,54 @@
+name: Bug 报告
+description: 报告可复现的问题
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        请先搜索是否已有同类 issue，并尽量提供可复现信息。安全漏洞请走 SECURITY.md 的私密渠道。
+  - type: input
+    id: version
+    attributes:
+      label: 云阔版本
+      description: 设置页或安装包文件名里的版本号
+      placeholder: 0.2.14
+    validations:
+      required: true
+  - type: input
+    id: system
+    attributes:
+      label: 系统环境
+      description: Windows 版本、CPU 架构、是否开启 TUN/安全服务
+      placeholder: Windows 11 26100 x64，已安装安全服务，TUN 开启
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤
+      placeholder: |
+        1. 打开「代理 → 概览」
+        2. 点击「重启内核」
+        3. …
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 预期结果
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: 实际结果
+      description: 有日志请贴「代理 → 日志」或 %APPDATA% 下对应日志的脱敏片段
+    validations:
+      required: true
+  - type: textarea
+    id: extra
+    attributes:
+      label: 其他信息
+      description: 截图、抓包、是否必现、是否为免安装版
+    validations:
+      required: false

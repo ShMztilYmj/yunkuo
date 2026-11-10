@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "agent-hud",
+  "description": "Agent 悬浮条：读取状态、拖动自身窗口及接收自身事件",
+  "windows": ["agent-hud"],
+  "permissions": ["core:default", "core:window:allow-start-dragging"]
+}

@@ -1,0 +1,167 @@
+/* 代理牌：只展示状态，不带按钮。和托盘面板同一套牌面语言。
+   必须排在 app.css 之后：这里要覆盖 .proxy-status 的旧值。 */
+
+.proxy-status {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  /* 和托盘面板同一副牌：宽高比 2.5 : 3.5。 */
+  aspect-ratio: 2.5 / 3.5;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--workspace);
+  box-shadow: 0 10px 26px #00000018;
+}
+/* 牌的内框：和托盘面板同一道细线，离边 5px，只做视觉。 */
+.proxy-status::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 5px;
+  border: 1px solid color-mix(in srgb, var(--color-zinc-400) 13%, transparent);
+  border-radius: 14px;
+  pointer-events: none;
+}
+
+.proxy-status-head {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 12px;
+  color: var(--color-zinc-200);
+  font-size: 12.5px;
+  font-weight: 500;
+}
+.proxy-status-head > svg {
+  flex-shrink: 0;
+  color: var(--color-zinc-400);
+  stroke-width: 1.7;
+}
+.proxy-state {
+  display: inline-flex;
+  margin-left: auto;
+  align-items: center;
+  gap: 5px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 400;
+}
+.proxy-state i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #b4453c;
+}
+.proxy-state.is-on i {
+  background: #349974;
+}
+
+.proxy-status-body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+  gap: 9px;
+  border-top: 1px solid var(--line);
+  padding: 14px 12px 12px;
+}
+
+/* 牌心：花色 + 当前路由一行大字 + 内核/权限一行小结。 */
+.proxy-status-figure {
+  display: grid;
+  flex: 1;
+  align-content: center;
+  justify-items: center;
+  gap: 2px;
+  padding: 2px 0 4px;
+}
+.proxy-status-suit {
+  display: grid;
+  place-items: center;
+  color: var(--color-zinc-300);
+  opacity: 0.5;
+}
+.proxy-status-figure strong {
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: 1px;
+  color: var(--color-zinc-100);
+}
+.proxy-status-meta {
+  margin: 1px 0 0;
+  color: var(--muted);
+  font-size: 10.5px;
+  line-height: 1.4;
+  text-align: center;
+}
+
+/* 三个状态只读：绿点是实际状态，不可点。 */
+.proxy-flags {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.proxy-flags li {
+  display: flex;
+  min-height: 27px;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--surface-soft);
+  color: var(--muted);
+  font-size: 11px;
+}
+.proxy-flags li i {
+  width: 5px;
+  height: 5px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--muted) 40%, transparent);
+}
+.proxy-flags li.is-on {
+  border-color: color-mix(in srgb, #388e70 30%, var(--line));
+  color: var(--color-zinc-300);
+}
+.proxy-flags li.is-on i {
+  background: #349974;
+}
+
+.proxy-status-note,
+.proxy-status-error,
+.proxy-status-sub {
+  margin: 0;
+  font-size: 10px;
+  line-height: 1.5;
+}
+.proxy-status-note {
+  color: var(--muted);
+  text-align: center;
+}
+.proxy-status-error {
+  color: var(--color-red-400);
+  overflow-wrap: anywhere;
+}
+.proxy-status-sub {
+  overflow: hidden;
+  border-top: 1px solid var(--line);
+  padding-top: 8px;
+  color: var(--muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 浮层本体让给这张牌：去掉外层自带的底与阴影，避免双层边框和双份投影。 */
+.proxy-quick-popover {
+  width: 320px;
+  border-radius: 18px;
+  background: transparent;
+  box-shadow: none;
+  overflow: visible;
+}

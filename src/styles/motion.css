@@ -1,0 +1,217 @@
+/* 所有界面共用的交互节奏；列表轮询和数据刷新不触发整页重播。 */
+:root {
+  --motion-fast: 130ms;
+  --motion-base: 190ms;
+  --motion-layout: 260ms;
+  --motion-ease: cubic-bezier(0.2, 0.75, 0.25, 1);
+  /* 外壳结构变化（侧栏收放、卡片跟随）用一段更长的缓出，避免宽度与文字同时收尾显得生硬 */
+  --motion-shell: 320ms;
+  --motion-shell-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(7px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes content-enter {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes popover-enter {
+  from {
+    opacity: 0;
+    transform: translateY(5px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.page-transition {
+  height: 100%;
+  min-height: 100%;
+}
+/* 侧栏收放：宽度、内边距、条目标签一起走同一段缓动，卡片只随布局联动。 */
+.app-sidebar {
+  transition: width var(--motion-shell) var(--motion-shell-ease);
+}
+.sidebar-brand,
+.sidebar-navigation,
+.sidebar-bottom {
+  transition: padding var(--motion-shell) var(--motion-shell-ease);
+}
+.sidebar-brand {
+  transition:
+    width var(--motion-shell) var(--motion-shell-ease),
+    height var(--motion-shell) var(--motion-shell-ease),
+    margin var(--motion-shell) var(--motion-shell-ease),
+    padding var(--motion-shell) var(--motion-shell-ease),
+    background-color var(--motion-base) ease;
+}
+.sidebar-link {
+  transition:
+    width var(--motion-shell) var(--motion-shell-ease),
+    padding var(--motion-shell) var(--motion-shell-ease),
+    gap var(--motion-shell) var(--motion-shell-ease),
+    background-color var(--motion-fast) ease,
+    color var(--motion-fast) ease;
+}
+/* 展开时先让轨道变宽，宽度基本到位后再让标签淡入，避免文字在窄轨道里被截断；
+   收起时标签立即退场，只剩图标平滑归位。 */
+.sidebar-copy,
+.sidebar-trailing,
+.sidebar-section-label > span {
+  transition:
+    opacity 110ms ease 150ms,
+    visibility 0s 150ms;
+}
+.is-collapsed .sidebar-copy,
+.is-collapsed .sidebar-trailing,
+.is-collapsed .sidebar-section-label > span {
+  transition:
+    opacity 70ms ease,
+    visibility 0s 70ms;
+}
+.sidebar-section-label {
+  transition:
+    height var(--motion-shell) var(--motion-shell-ease),
+    margin var(--motion-shell) var(--motion-shell-ease),
+    border-color var(--motion-base) ease;
+}
+.sidebar-icon {
+  transition: transform var(--motion-base) var(--motion-ease);
+}
+.sidebar-link:hover .sidebar-icon {
+  transform: translateX(1px);
+}
+.is-collapsed .sidebar-link:hover .sidebar-icon,
+.is-collapsed .sidebar-brand:hover .sidebar-icon {
+  transform: scale(1.08);
+}
+.sidebar-toggle svg {
+  transition: transform var(--motion-layout) var(--motion-ease);
+}
+.sidebar-toggle.is-collapsed svg {
+  transform: scaleX(-1);
+}
+
+.app-shell :where(button, a),
+.tray-card :where(button) {
+  transition:
+    background-color var(--motion-fast) ease,
+    border-color var(--motion-fast) ease,
+    color var(--motion-fast) ease,
+    box-shadow var(--motion-base) ease,
+    opacity var(--motion-fast) ease,
+    transform var(--motion-base) var(--motion-ease),
+    translate var(--motion-fast) var(--motion-ease),
+    scale var(--motion-fast) var(--motion-ease);
+}
+.app-shell button:not(:disabled):active,
+.tray-card button:not(:disabled):active {
+  scale: 0.975;
+}
+.workspace-content :is(.btn-primary, .btn-secondary):not(:disabled):hover {
+  translate: 0 -1px;
+}
+.workspace-content :is(.btn-primary, .btn-secondary):not(:disabled):active {
+  translate: 0 0;
+}
+.workspace-content
+  :is(
+    .ui-panel,
+    .home-status-card,
+    .home-maintenance,
+    .rounded-xl.border,
+    .rounded-2xl.border
+  ) {
+  transition:
+    border-color var(--motion-base) ease,
+    box-shadow var(--motion-base) ease,
+    translate var(--motion-base) var(--motion-ease);
+}
+.workspace-content .ui-panel:hover {
+  border-color: var(--color-zinc-700);
+  box-shadow: 0 4px 16px #00000004;
+}
+.home-status-card:hover {
+  translate: 0 -2px;
+  box-shadow: 0 5px 14px #00000005;
+}
+.tray-toggle,
+.tray-toggle i,
+button[role="switch"] > span {
+  transition-duration: var(--motion-base);
+  transition-timing-function: var(--motion-ease);
+}
+.subscription-traffic-fill {
+  transition:
+    width var(--motion-layout) var(--motion-ease),
+    background-color var(--motion-base) ease;
+}
+.ui-popover {
+  transform-origin: bottom left;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .page-transition {
+    animation: page-enter 210ms var(--motion-ease) both;
+  }
+  .page-transition
+    > .mx-auto
+    > :is(.ui-panel, section, .grid, .launch-panel, .home-maintenance) {
+    animation: content-enter 230ms var(--motion-ease) both;
+    animation-delay: 35ms;
+  }
+  .page-transition
+    > .mx-auto
+    > :is(.ui-panel, section, .grid, .launch-panel):nth-child(3) {
+    animation-delay: 65ms;
+  }
+  .page-transition
+    > .mx-auto
+    > :is(.ui-panel, section, .grid, .launch-panel):nth-child(4) {
+    animation-delay: 90ms;
+  }
+  .page-transition
+    > .mx-auto
+    > :is(.ui-panel, section, .grid, .launch-panel):nth-child(n + 5) {
+    animation-delay: 110ms;
+  }
+  .ui-popover {
+    animation: popover-enter 150ms var(--motion-ease) both;
+  }
+  .workspace-content :is([role="alert"], [role="status"]),
+  .tray-message {
+    animation: content-enter 170ms var(--motion-ease) both;
+  }
+  .workspace-content details[open] > :not(summary) {
+    animation: content-enter 170ms var(--motion-ease) both;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+}

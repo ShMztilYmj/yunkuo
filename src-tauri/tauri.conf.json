@@ -1,0 +1,81 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "云阔",
+  "version": "0.2.14",
+  "identifier": "com.yunkuo.desktop",
+  "build": {
+    "beforeDevCommand": "pnpm dev",
+    "devUrl": "http://localhost:11420",
+    "beforeBuildCommand": "pnpm build",
+    "frontendDist": "../dist",
+    "beforeBundleCommand": "node scripts/prepare-bundle.mjs"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "云阔",
+        "width": 1200,
+        "height": 800,
+        "minWidth": 1140,
+        "minHeight": 700,
+        "center": true,
+        "decorations": false,
+        "visible": false,
+        "additionalBrowserArgs": "--disable-features=msWebOOUI,msPdfOOUI,msSmartScreenProtection --force-webrtc-ip-handling-policy=disable_non_proxied_udp --disable-non-proxied-udp"
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": [
+      "nsis"
+    ],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "externalBin": [
+      "binaries/yunkuo-service",
+      "binaries/云阔mihomo"
+    ],
+    "resources": [
+      "resources/geodata/geosite.dat",
+      "resources/geodata/Country.mmdb",
+      "resources/geodata/ASN.mmdb",
+      "resources/fingerprint-chromium",
+      "resources/extensions",
+      "resources/tokscale",
+      "resources/recovery/*",
+      "../licenses",
+      "../THIRD-PARTY-NOTICES.md"
+    ],
+    "windows": {
+      "webviewInstallMode": {
+        "type": "embedBootstrapper"
+      },
+      "signCommand": {
+        "cmd": "node",
+        "args": [
+          "../scripts/sign-windows.mjs",
+          "%1"
+        ]
+      },
+      "nsis": {
+        "installMode": "currentUser",
+        "installerHooks": "./windows/hooks.nsh",
+        "installerIcon": "icons/icon.ico",
+        "uninstallerIcon": "icons/icon.ico",
+        "languages": [
+          "SimpChinese",
+          "English"
+        ]
+      }
+    }
+  }
+}

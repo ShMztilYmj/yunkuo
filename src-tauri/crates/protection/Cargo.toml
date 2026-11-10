@@ -1,0 +1,48 @@
+[package]
+name = "protection"
+# 与主程序同版本：故障日志会写入 CARGO_PKG_VERSION，版本漂移会让两类进程的记录对不上。
+version = "0.2.14"
+edition = "2024"
+publish = false
+description = "云阔网络保护与安全服务协议，供主程序与安全服务共用；不包含桌面与 AI 配置。"
+
+[dependencies]
+anyhow = "1"
+chrono = { version = "0.4", features = ["serde"] }
+once_cell = "1"
+parking_lot = "0.12"
+rand = "0.8"
+ring = "0.17"
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls", "blocking"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+serde_yaml = "0.9"
+uuid = { version = "1", features = ["v4"] }
+# 特性表与主程序保持一致：这里是同一批模块编译出来的，缺一个特性就会编译失败。
+windows = { version = "0.61", features = [
+  "Win32_Foundation",
+  "Win32_System_Time",
+  "Win32_System_Registry",
+  "Win32_System_Threading",
+  "Win32_System_RestartManager",
+  "Win32_System_Com",
+  "Win32_System_Diagnostics_Debug",
+  "Win32_System_JobObjects",
+  "Win32_System_DataExchange",
+  "Win32_System_Memory",
+  "Win32_System_Rpc",
+  "Win32_NetworkManagement_WindowsFilteringPlatform",
+  "Win32_NetworkManagement_IpHelper",
+  "Win32_NetworkManagement_Ndis",
+  "Win32_NetworkManagement_Dns",
+  "Win32_Storage_FileSystem",
+  "Win32_Security",
+  "Win32_Security_Cryptography",
+  "Win32_Security_Authorization",
+  "Win32_UI_Shell",
+  "Win32_UI_WindowsAndMessaging",
+  "Win32_UI_Input_KeyboardAndMouse",
+] }
+
+[dev-dependencies]
+tiny_http = "0.12"

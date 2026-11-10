@@ -1,0 +1,33 @@
+name: 打包冒烟
+
+# 需要真实 WebView2 与可交互桌面（UI Automation + 截屏），托管 runner 的 session 0 跑不了，
+# 因此只接受手动触发，并跑在带桌面的自托管 Windows 机器上。
+on:
+  workflow_dispatch:
+
+jobs:
+  portable:
+    name: 构建免安装包并验证概览页
+    runs-on: [self-hosted, windows, desktop]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12.11.2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri -> target
+      - run: pnpm install --frozen-lockfile
+      # 打包脚本会依次完成：服务侧车 → 主程序（内嵌前端）→ 一致性校验 → 免安装目录。
+      - run: pnpm run build:portable
+      - run: pnpm run test:packaged
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: packaged-overview
+          path: artifacts/packaged-overview

@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "tray-menu",
+  "description": "云阔托盘快捷面板，可读取应用状态并收起自身窗口",
+  "windows": ["tray-menu"],
+  "permissions": ["core:default", "core:window:allow-hide"]
+}

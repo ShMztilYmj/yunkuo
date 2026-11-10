@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="zh-CN" data-surface="hud">
+  <head>
+    <meta charset="UTF-8" />
+    <title>悬浮条交互回归</title>
+  </head>
+  <body>
+    <div id="fixture"></div>
+    <script type="module">
+      import React from "react";
+      import { createRoot } from "react-dom/client";
+      import { mockIPC, mockWindows } from "@tauri-apps/api/mocks";
+      import { emit } from "@tauri-apps/api/event";
+      import AgentHud from "/src/app/windows/AgentHud.tsx";
+      import { useAppStore } from "/src/store.ts";
+      import "/src/styles/index.css";
+
+      const keys = ["claude", "chatgpt", "cursor", "deepseek"];
+      const config = { ai_tool_cards: keys, mode: "rule" };
+      const usage = {
+        input: 1000,
+        output: 500,
+        cached: 100,
+        cacheWrite: 0,
+        total: 1500,
+        sessions: 1,
+      };
+      const items = keys.map((key) => ({
+        key,
+        complete: true,
+        usageAvailable: true,
+        dataSource: "测试本地会话",
+        today: usage,
+        week: usage,
+        last7: usage,
+        all: usage,
+        account: {
+          email: null,
+          name: null,
+          plan: "测试方案",
+          switchable: false,
+        },
+        rate: { primary: null, secondary: null },
+        note: "测试数据",
+        scannedAt: Date.now() / 1000,
+        recentSessions: [
+          {
+            id: key,
+            tool: key,
+            project: "回归测试",
+            state: "running",
+            lastActivityAt: Date.now() / 1000,
+            total: 1500,
+          },
+        ],
+      }));
+      const status = {
+        enabled: true,
+        alwaysOnTop: true,
+        autoDockTop: true,
+        dockEdge: "top",
+        stripOffsetX: 0,
+        stripOffsetY: 0,
+        toolScope: "installed",
+        expanded: false,
+        compactWidth: 312,
+        sideHeight: 320,
+      };
+      const calls = [];
+      const subscribed = [];
+      let online = ["chatgpt"];
+      let readyBeforeListeners = false;
+      let failure = null;
+      let toolsFailure = new URLSearchParams(location.search).has("tools-fail");
+      let holdLayout = false;
+      let releaseLayout;
+      const delay = () => new Promise((resolve) => setTimeout(resolve, 20));
+      mockIPC(
+        async (command, args) => {
+          calls.push({ command, args });
+          if (command === "plugin:app|version") return "0.2.14";
+          if (command === "get_config") return config;
+          if (command === "core_status")
+            return { running: false, system_proxy: false, tun: false };
+          if (command === "current_profile") return null;
+          if (command === "agent_hud_ready") {
+            readyBeforeListeners ||= subscribed.length < 3;
+            await emit("agent-hud-visibility", true);
+            return { ...status };
+          }
+          if (command === "agent_hud_tools") {
+            if (toolsFailure) throw new Error("测试：工具识别暂不可用");
+            return keys.map((key) => ({
+              key,
+              installed: true,
+              online: online.includes(key),
+            }));
+          }
+          if (command === "ai_usage_status") return { items };
+          if (command === "agent_hud_expand") {
+            await delay();
+            status.expanded = args.expanded;
+            status.compactWidth = args.toolCount
+              ? 176 + 48 * args.toolCount
+              : 312;
+            status.sideHeight = args.toolCount
+              ? 184 + 56 * args.toolCount
+              : 320;
+            const response = { ...status };
+            if (holdLayout) {
+              holdLayout = false;
+              await new Promise((resolve) => {
+                releaseLayout = resolve;
+              });
+            }
+            return response;
+          }
+          if (command === "agent_hud_set_options") {
+            await delay();
+            if (failure) throw failure;
+            Object.assign(status, args);
+            await emit("agent-hud-changed", { ...status });
+            return { ...status };
+          }
+          if (command === "agent_hud_snap") return true;
+          if (command === "plugin:window|is_visible") return true;
+          if (command === "plugin:window|theme") return "light";
+          throw new Error(`fixture: 未覆盖的命令 ${command}`);
+        },
+        { shouldMockEvents: true },
+      );
+      mockWindows("agent-hud");
+      const originalInvoke = window.__TAURI_INTERNALS__.invoke;
+      window.__TAURI_INTERNALS__.invoke = async (command, args, options) => {
+        // SDK mock 的 unlisten 使用 id，真实插件使用 eventId；只在夹具中补齐。
+        if (command === "plugin:event|unlisten")
+          args = { ...args, id: args.eventId };
+        if (command === "plugin:event|listen") {
+          await delay();
+          const result = await originalInvoke(command, args, options);
+          subscribed.push(args.event);
+          return result;
+        }
+        return originalInvoke(command, args, options);
+      };
+      useAppStore.setState({ config, windowVisible: false });
+      window.fixture = {
+        calls,
+        emit,
+        status,
+        readyBeforeListeners: () => readyBeforeListeners,
+        online: (value) => {
+          online = value;
+        },
+        fail: (value) => {
+          failure = value;
+        },
+        toolsFail: (value) => {
+          toolsFailure = value;
+        },
+        holdLayout: () => {
+          holdLayout = true;
+        },
+        layoutHeld: () => !!releaseLayout,
+        releaseLayout: () => {
+          const release = releaseLayout;
+          releaseLayout = null;
+          release?.();
+        },
+        cards: async (values) => {
+          keys.splice(0, keys.length, ...values);
+          await emit("config-changed", {
+            ...config,
+            ai_tool_cards: [...values],
+          });
+        },
+        dock: async (edge) => {
+          status.dockEdge = edge;
+          status.stripOffsetX = edge === "right" && status.expanded ? 408 : 0;
+          await emit("agent-hud-changed", { ...status });
+        },
+      };
+      createRoot(document.getElementById("fixture")).render(
+        React.createElement(
+          React.StrictMode,
+          null,
+          React.createElement(AgentHud),
+        ),
+      );
+    </script>
+  </body>
+</html>

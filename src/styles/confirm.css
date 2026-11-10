@@ -1,0 +1,417 @@
+/* ---------- 应用内确认框（替代原生 confirm / 系统弹窗） ----------
+   原生弹窗会打断渲染进程、只给一行纯文本，按钮还是系统的 OK / Cancel；
+   ConfirmDialog 用 <dialog showModal> 铺一层卡片，外观与应用内的面板一致：
+   32px 图标徽章 + 分类标签 + 对象信息块 + 后果提示 + 右侧操作区。 */
+.confirm-dialog {
+  position: fixed;
+  inset: 0;
+  width: min(432px, calc(100vw - 32px));
+  max-width: none;
+  max-height: calc(100dvh - 48px);
+  margin: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-zinc-200);
+  overflow: visible;
+}
+.confirm-dialog::backdrop {
+  background: color-mix(in srgb, #10100e 54%, transparent);
+  backdrop-filter: blur(2px);
+}
+html[data-theme="light"] .confirm-dialog::backdrop {
+  background: color-mix(in srgb, #2b2a26 34%, transparent);
+}
+
+.confirm-card {
+  --tone: var(--color-red-400);
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  padding: 17px 19px 15px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow:
+    0 26px 68px -22px #00000059,
+    0 3px 12px -4px #00000026;
+}
+html[data-theme="light"] .confirm-card {
+  box-shadow:
+    0 26px 68px -26px #1b1a1533,
+    0 2px 10px -5px #1b1a1517;
+}
+.confirm-dialog.is-danger .confirm-card {
+  --tone: var(--color-red-400);
+}
+.confirm-dialog.is-warning .confirm-card {
+  --tone: var(--color-amber-400);
+}
+.confirm-dialog.is-neutral .confirm-card {
+  --tone: var(--color-blue-400);
+}
+
+/* 头部：图标徽章 + 分类标签 / 标题 + 关闭 */
+.confirm-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.confirm-icon {
+  display: grid;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--tone) 26%, transparent);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--tone) 12%, transparent);
+  color: var(--tone);
+}
+.confirm-heading {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 1px;
+  padding-top: 1px;
+}
+.confirm-eyebrow {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.confirm-heading h2 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.1px;
+  line-height: 1.45;
+  color: var(--color-zinc-100);
+}
+.confirm-close {
+  display: grid;
+  flex: none;
+  width: 24px;
+  height: 24px;
+  margin: -2px -4px 0 0;
+  place-items: center;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--color-zinc-500);
+  transition:
+    background-color var(--motion-fast) ease,
+    color var(--motion-fast) ease;
+}
+.confirm-close:hover:not(:disabled) {
+  background: var(--hover);
+  color: var(--color-zinc-100);
+}
+.confirm-close:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.confirm-desc {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.65;
+  color: var(--color-zinc-400);
+}
+
+/* 被操作对象：等宽名称 + 类型徽章 + 一行补充信息 */
+.confirm-subject {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 11px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: var(--surface-soft);
+}
+.confirm-subject-label {
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+  font-size: 12px;
+  color: var(--color-zinc-100);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  user-select: text;
+}
+.confirm-subject-label[data-mono="true"] {
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 11.5px;
+  letter-spacing: -0.1px;
+}
+.confirm-subject-meta {
+  flex: 1 0 100%;
+  font-size: 10.5px;
+  line-height: 1.55;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+.confirm-tag {
+  flex: none;
+  padding: 1px 7px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--color-zinc-500);
+  font-size: 9.5px;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+.confirm-tag[data-tone="blue"] {
+  border-color: color-mix(in srgb, var(--color-blue-400) 20%, transparent);
+  background: color-mix(in srgb, var(--color-blue-400) 8%, transparent);
+  color: var(--color-blue-400);
+}
+.confirm-tag[data-tone="green"] {
+  border-color: color-mix(in srgb, var(--color-emerald-400) 20%, transparent);
+  background: color-mix(in srgb, var(--color-emerald-400) 8%, transparent);
+  color: var(--color-emerald-400);
+}
+.confirm-tag[data-tone="amber"] {
+  border-color: color-mix(in srgb, var(--color-amber-400) 20%, transparent);
+  background: color-mix(in srgb, var(--color-amber-400) 8%, transparent);
+  color: var(--color-amber-400);
+}
+.confirm-tag[data-tone="red"] {
+  border-color: color-mix(in srgb, var(--color-red-400) 20%, transparent);
+  background: color-mix(in srgb, var(--color-red-400) 8%, transparent);
+  color: var(--color-red-400);
+}
+
+/* 变更预览：等宽目标值右对齐，便于逐项核对 */
+.confirm-details {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 3px 11px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: var(--surface-soft);
+}
+.confirm-detail {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 6px 0;
+}
+.confirm-detail + .confirm-detail {
+  border-top: 1px dashed color-mix(in srgb, var(--line) 80%, transparent);
+}
+.confirm-detail dt {
+  flex: none;
+  font-size: 11px;
+  color: var(--muted);
+}
+.confirm-detail dd {
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--color-zinc-200);
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  user-select: text;
+}
+
+/* 后果提示：跟随对话框主色，避免和正文混在一起 */
+.confirm-note {
+  --note-tone: var(--tone);
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  margin: 0;
+  padding: 8px 10px;
+  border: 1px solid color-mix(in srgb, var(--note-tone) 20%, transparent);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--note-tone) 7%, transparent);
+  color: color-mix(in srgb, var(--note-tone) 58%, var(--color-zinc-200));
+  font-size: 11.5px;
+  line-height: 1.6;
+}
+.confirm-note[data-tone="danger"] {
+  --note-tone: var(--color-red-400);
+}
+.confirm-note[data-tone="warning"] {
+  --note-tone: var(--color-amber-400);
+}
+.confirm-note[data-tone="neutral"] {
+  --note-tone: var(--color-blue-400);
+}
+.confirm-note-icon {
+  flex: none;
+  margin-top: 1px;
+  color: var(--note-tone);
+}
+
+.confirm-error {
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--color-red-400) 9%, transparent);
+  color: var(--color-red-400);
+  font-size: 11.5px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+  user-select: text;
+}
+
+/* 操作区：左侧键盘提示，右侧「取消 / 确认」 */
+.confirm-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 2px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+.confirm-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--muted);
+  font-size: 10.5px;
+  white-space: nowrap;
+}
+.confirm-hint kbd {
+  padding: 0 5px;
+  border: 1px solid var(--line);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  background: var(--surface-soft);
+  color: var(--color-zinc-500);
+  font-family: inherit;
+  font-size: 9.5px;
+  line-height: 15px;
+}
+.confirm-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.confirm-btn {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 31px;
+  padding: 0 13px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition:
+    background-color var(--motion-fast) ease,
+    border-color var(--motion-fast) ease,
+    color var(--motion-fast) ease;
+}
+.confirm-btn.is-plain {
+  border-color: var(--line);
+  background: var(--surface);
+  color: var(--color-zinc-300);
+}
+.confirm-btn.is-plain:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--color-zinc-400) 26%, var(--line));
+  background: var(--hover);
+  color: var(--color-zinc-100);
+}
+.confirm-btn.is-solid {
+  background: var(--color-red-600);
+  color: #fff;
+  box-shadow: 0 1px 2px #0000001f;
+}
+.confirm-dialog.is-warning .confirm-btn.is-solid {
+  background: var(--color-amber-400);
+  color: var(--color-zinc-950);
+}
+.confirm-dialog.is-neutral .confirm-btn.is-solid {
+  background: var(--color-accent);
+  color: var(--color-accent-foreground);
+}
+.confirm-btn.is-solid:hover:not(:disabled) {
+  background: var(--color-red-500);
+}
+.confirm-dialog.is-warning .confirm-btn.is-solid:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-amber-400) 88%, #fff);
+}
+.confirm-dialog.is-neutral .confirm-btn.is-solid:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-accent) 88%, var(--workspace));
+}
+.confirm-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.confirm-btn:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--tone) 52%, transparent);
+  outline-offset: 2px;
+}
+.confirm-btn.is-plain:focus-visible {
+  outline-color: color-mix(in srgb, var(--color-zinc-400) 45%, transparent);
+}
+
+.confirm-spin {
+  animation: confirm-spin 900ms linear infinite;
+}
+@keyframes confirm-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 入场：卡片轻微上浮，遮罩淡入；减弱动效时直接给结果 */
+@keyframes confirm-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes confirm-scrim-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.confirm-dialog[open] .confirm-card {
+  animation: confirm-card-in 180ms var(--motion-ease) both;
+}
+.confirm-dialog[open]::backdrop {
+  animation: confirm-scrim-in 150ms ease both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .confirm-dialog[open] .confirm-card,
+  .confirm-dialog[open]::backdrop {
+    animation: none;
+  }
+  .confirm-spin {
+    animation-duration: 2.4s;
+  }
+}
+
+@media (max-width: 460px) {
+  .confirm-hint {
+    display: none;
+  }
+  .confirm-actions {
+    justify-content: flex-end;
+  }
+}

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>头像资源生命周期测试</title>
+  </head>
+  <body>
+    <div id="fixture"></div>
+    <script type="module">
+      import React from "react";
+      import { createRoot } from "react-dom/client";
+      import AgentBot from "/src/shared/ui/AgentBot.tsx";
+      import { useAppStore } from "/src/store.ts";
+      import "/src/styles/agent-bot.css";
+      const root = createRoot(document.getElementById("fixture"));
+      window.fixture = {
+        render(state) {
+          root.render(
+            React.createElement(AgentBot, { bot: "codex", state, size: 60 }),
+          );
+        },
+        visible(value) {
+          useAppStore.setState({ windowVisible: value });
+        },
+      };
+      window.fixture.render("idle");
+    </script>
+  </body>
+</html>

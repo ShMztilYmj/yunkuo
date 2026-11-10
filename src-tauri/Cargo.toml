@@ -1,0 +1,113 @@
+[package]
+name = "yunkuo"
+version = "0.2.14"
+description = "云阔 - 原生代理、环境检测与 AI 工作台"
+authors = ["云阔"]
+edition = "2024"
+default-run = "yunkuo"
+
+[lib]
+# The `_lib` suffix may seem redundant but it is necessary
+# to make the lib name unique and wouldn't conflict with the bin name.
+# This seems to be only an issue on Windows, see https://github.com/rust-lang/cargo/issues/8519
+name = "yunkuo_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+base64 = "0.22"
+
+[features]
+default = []
+performance-probes = ["tauri/custom-protocol"]
+
+[[bin]]
+name = "yunkuo-service"
+path = "src/bin/yunkuo-service.rs"
+
+[[bin]]
+name = "yunkuo-ui-probe"
+path = "src/bin/yunkuo-ui-probe.rs"
+required-features = ["performance-probes"]
+
+[[bin]]
+name = "yunkuo-proxy-probe"
+path = "src/bin/yunkuo-proxy-probe.rs"
+required-features = ["performance-probes"]
+
+[dependencies]
+tauri = { version = "2", features = ["tray-icon", "unstable"] }
+tauri-plugin-opener = "2"
+tauri-plugin-shell = "2"
+tauri-plugin-dialog = "2"
+tauri-plugin-single-instance = "2"
+tauri-plugin-autostart = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+serde_yaml = "0.9"
+toml_edit = "0.25"
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls", "blocking"] }
+sysproxy = "0.3"
+if-addrs = "0.13"
+tiny_http = "0.12"
+windows-service = "0.8"
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "time", "sync", "process", "io-util"] }
+parking_lot = "0.12"
+anyhow = "1"
+thiserror = "2"
+once_cell = "1"
+sysinfo = { version = "0.39", default-features = false, features = ["system"] }
+rand = "0.8"
+chrono = { version = "0.4", features = ["serde"] }
+chrono-tz = "0.10"
+uuid = { version = "1", features = ["v4"] }
+log = "0.4"
+ring = "0.17"
+zeroize = "1.8"
+tar = "0.4"
+zstd = "0.13"
+base64 = "0.22"
+windows = { version = "0.61", features = [
+  "Win32_Foundation",
+  "Win32_System_Time",
+  "Win32_System_Registry",
+  "Win32_System_Threading",
+  "Win32_System_RestartManager",
+  "Win32_System_Com",
+  "Win32_System_Diagnostics_Debug",
+  "Win32_System_JobObjects",
+  "Win32_System_DataExchange",
+  "Win32_System_Memory",
+  "Win32_System_Rpc",
+  "Win32_NetworkManagement_WindowsFilteringPlatform",
+  "Win32_NetworkManagement_IpHelper",
+  "Win32_NetworkManagement_Ndis",
+  "Win32_NetworkManagement_Dns",
+  "Win32_Networking_WinSock",
+  "Win32_Storage_FileSystem",
+  "Win32_Security",
+  "Win32_Security_Cryptography",
+  "Win32_Security_Authorization",
+  "Win32_UI_Shell",
+  "Win32_UI_WindowsAndMessaging",
+  "Win32_UI_Input_KeyboardAndMouse",
+] }
+tauri-plugin-notification = "2"
+png = "0.18"
+rusqlite = { version = "0.40.2", features = ["bundled"] }
+# 安全服务与主程序共用的网络保护实现（配置、隐私、WFP、服务协议）。
+protection = { path = "crates/protection" }
+proxy-runtime = { package = "mihomo-runtime", path = "crates/mihomo-runtime" }
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "s"
+panic = "abort"
+strip = true
+
+[workspace]
+# 服务组件过去用 #[path] 包含主程序源码，现在改为 workspace 成员 crate。
+# 成员与主程序共用同一个 Cargo.lock 与 target/，`cargo build --locked` 仍然有效。
+members = ["crates/protection", "crates/mihomo-runtime"]
+resolver = "3"

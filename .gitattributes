@@ -1,0 +1,22 @@
+# 行尾与编码：Windows 项目，脚本用 CRLF，其余源码跟随 Git 默认
+* text=auto
+
+*.ps1   text eol=crlf
+*.bat   text eol=crlf
+*.cmd   text eol=crlf
+*.ts    text eol=lf
+*.tsx   text eol=lf
+*.css   text eol=lf
+*.rs    text eol=lf
+*.mjs   text eol=lf
+*.json  text eol=lf
+*.yml   text eol=lf
+*.md    text eol=lf
+
+*.png   binary
+*.ico   binary
+*.webm  binary
+*.dat   binary
+*.mmdb  binary
+*.exe   binary
+*.dll   binary

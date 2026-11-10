@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>浏览器实际环境核验</title>
+    <link rel="stylesheet" href="check.css" />
+    <script src="check.js" type="module"></script>
+  </head>
+  <body>
+    <main>
+      <p class="eyebrow">CLAUDE 一键配置 · 浏览器实测</p>
+      <h1 id="title">正在读取当前浏览器环境…</h1>
+      <p id="summary">检测结果会通过本机临时会话回传到管理窗口。</p>
+      <div id="results"></div>
+      <details open>
+        <summary>DNS / WebRTC 原始证据</summary>
+        <div id="evidence"></div>
+      </details>
+      <button id="retry" type="button">重新检测</button>
+      <p class="note">
+        DNS 由 dnsleak.dev 权威服务观察浏览器/代理链的解析器，WebRTC 使用
+        Cloudflare 与 Google STUN。
+        第三方服务可能看到探测出口或解析器地址。本轮未发现风险不等于所有流量零泄漏；不会读取账号密码和
+        Cookie。
+      </p>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,113 @@
+.tool-connection-summary {
+  font-size: 11px;
+}
+.tool-connection-summary h3 {
+  margin-bottom: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-zinc-200);
+}
+.tool-connection-summary dl > div {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  gap: 8px;
+  margin: 7px 0;
+}
+.tool-connection-summary dt {
+  color: var(--color-zinc-500);
+}
+.tool-connection-summary dd {
+  color: var(--color-zinc-300);
+  overflow-wrap: anywhere;
+}
+.tool-connection-summary small {
+  display: block;
+  color: var(--color-zinc-500);
+  font-size: 10px;
+  margin-top: 3px;
+}
+.tool-connection-summary [data-pending="true"] {
+  color: var(--color-amber-400);
+}
+.tool-connection-summary > p,
+.tool-setup-panel > p {
+  color: var(--color-zinc-500);
+  font-size: 10px;
+  line-height: 1.7;
+  margin: 10px 0;
+  overflow-wrap: anywhere;
+}
+.tool-setup-panel {
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+}
+.tool-setup-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 10px;
+  margin-bottom: 14px;
+  font-size: 10px;
+  color: var(--color-zinc-400);
+}
+.tool-setup-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 14px;
+}
+.tool-setup-actions button {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 10px;
+}
+.tool-setup-panel button:disabled {
+  opacity: 0.45;
+}
+.tool-setup-panel [data-failed="true"] {
+  color: var(--color-red-400);
+}
+.tool-setup-candidates {
+  margin-top: 12px;
+}
+.tool-setup-candidates p {
+  color: var(--color-zinc-500);
+  font-size: 10px;
+  margin-bottom: 6px;
+}
+.tool-setup-candidates button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 7px;
+  border-radius: 7px;
+  background: var(--surface-soft);
+  margin-top: 4px;
+  font-size: 10px;
+  text-align: left;
+}
+.tool-setup-candidates button > span {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.tool-setup-candidates b {
+  color: var(--tool-ink);
+  font-weight: 500;
+}
+.tool-setup-links {
+  display: flex;
+  gap: 12px;
+  font-size: 10px;
+  margin-top: 12px;
+  color: var(--color-zinc-400);
+}
+.tool-setup-links a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

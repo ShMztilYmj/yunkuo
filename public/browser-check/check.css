@@ -1,0 +1,92 @@
+:root {
+  font-family:
+    Segoe UI,
+    system-ui,
+    sans-serif;
+  color: #e4e4e7;
+  background: #09090b;
+  color-scheme: dark;
+}
+body {
+  margin: 0;
+  padding: 48px 20px;
+}
+main {
+  max-width: 860px;
+  margin: auto;
+}
+.eyebrow {
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: #fb923c;
+}
+h1 {
+  font-size: 30px;
+  margin: 18px 0;
+}
+p {
+  color: #a1a1aa;
+  line-height: 1.8;
+}
+#results {
+  border: 1px solid #27272a;
+  border-radius: 16px;
+  overflow: hidden;
+  margin: 30px 0;
+}
+.row {
+  display: grid;
+  grid-template-columns: 140px 1fr 1fr 55px;
+  gap: 16px;
+  padding: 16px;
+  border-bottom: 1px solid #27272a;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+.row:last-child {
+  border: 0;
+}
+.pass {
+  color: #4ade80;
+}
+.fail {
+  color: #fbbf24;
+}
+.risk {
+  color: #f87171;
+}
+details {
+  border: 1px solid #27272a;
+  border-radius: 12px;
+  padding: 16px;
+  overflow-wrap: anywhere;
+}
+#evidence {
+  font-size: 12px;
+}
+button {
+  background: #ea580c;
+  color: white;
+  border: 0;
+  border-radius: 9px;
+  padding: 12px 24px;
+  cursor: pointer;
+}
+button:disabled {
+  opacity: 0.5;
+}
+.note {
+  font-size: 12px;
+  margin-top: 30px;
+}
+body.success h1 {
+  color: #4ade80;
+}
+@media (max-width: 640px) {
+  .row {
+    grid-template-columns: 100px 1fr;
+  }
+  .row span {
+    font-size: 12px;
+  }
+}

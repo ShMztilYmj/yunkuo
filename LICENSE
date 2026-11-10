@@ -1,0 +1,32 @@
+MIT License
+
+Copyright (c) 2026 云阔 (Yunkuo) and contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+本仓库同时包含或分发第三方组件，各自适用其原始许可，完整清单见
+THIRD-PARTY-NOTICES.md 与 licenses/ 目录。其中：
+
+- mihomo（代理内核）以独立进程分发，采用 GPL-3.0，见 licenses/Mihomo-GPL-3.0.txt。
+- Fingerprint Chromium 采用 BSD-3-Clause，见 licenses/Fingerprint-Chromium-BSD.txt。
+- Wintun、Tokscale、Agent HUD、CCBaga、LobeHub 图标等见 THIRD-PARTY-NOTICES.md。
+
+上述许可是独立聚合关系，不改变本仓库自身源码的 MIT 授权。

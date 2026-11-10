@@ -1,0 +1,33 @@
+{
+  "version": 2,
+  "agents": [
+    "claude-code",
+    "codex",
+    "grok",
+    "glm",
+    "deepseek",
+    "kimi",
+    "antigravity",
+    "cursor",
+    "opencode"
+  ],
+  "states": [
+    "idle",
+    "working",
+    "asking",
+    "done"
+  ],
+  "video": {
+    "width": 256,
+    "height": 256,
+    "fps": 30,
+    "duration": 6,
+    "codec": "vp9",
+    "alpha": true,
+    "lossless": true,
+    "source": "Approved V2 exports plus matching Cursor / OpenCode extension"
+  },
+  "poster": "SVG state snapshots at 1.8s",
+  "reference": "Agent HUD 7ddd27e9e4d75bb627f2e8fb7498b9166238dc1b",
+  "brandMarksLicense": "LobeHub MIT (LICENSE-MIT.txt)"
+}
