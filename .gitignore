@@ -1,0 +1,35 @@
+# ── 依赖与构建产物 ───────────────────────────────────────────────
+node_modules/
+dist/
+src-tauri/target/
+src-tauri/binaries/
+release/
+*.log
+
+# ── 随包第三方二进制 / 数据（单文件或总量过大，不进 Git）──────────
+# 见 CONTRIBUTING.md「准备随包资源」，本地按固定版本放置即可
+src-tauri/resources/fingerprint-chromium/
+src-tauri/resources/tokscale/
+src-tauri/resources/geodata/
+
+# ── 本地调试、预览、性能采样 ─────────────────────────────────────
+.preview/
+preview/
+artifacts/
+backups/
+.tmp/
+.dsh-tmp/
+
+# ── 配置与备份 ───────────────────────────────────────────────────
+*.bak
+config.bak
+*.tsbuildinfo
+
+# ── 签名与密钥（建立仓库时不存在，防止误提交）────────────────────
+*.pfx
+*.p12
+*.pem
+*.key
+*.snk
+.env
+.env.*

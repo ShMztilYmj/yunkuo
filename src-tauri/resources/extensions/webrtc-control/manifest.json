@@ -1,0 +1,57 @@
+{
+"update_url": "https://clients2.google.com/service/update2/crx",
+"key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArTN9af9EAP5vQo3gRCwFKCm2G9iHLf3gHsaP3LzhqZ6zaAjLlXCItZz63prOB0Uq+qJRNc2mP9f4ZIWboIflytPe5VuFDyIW3yb6TjuQzC2/3puOtnX36l5erM0IZz4t65K11KeWAITq+fBu6c75FJg1IY5KdK7ui67q4E6jEOU9B4x7+GjZHUs2nCw//oaa7LOVG03LreI7sI+zgQ3Api2XkJOpEaHhJlYTdaXiXbLJ4fVtMs023xkVr8fmbqYbm6aFQytoXB7nRTxDkJuAP5wdwqJHU1oKaRZ/6xmH/9zT+x/jUq8ZFIz0yuM4OoDU/TS5bVu9Ly1fypf1nO1pFwIDAQAB",
+
+  "version": "0.3.5",
+  "manifest_version": 3,
+  "name": "WebRTC Control",
+  "homepage_url": "https://mybrowseraddon.com/webrtc-control.html",
+  "description": "Have control over WebRTC (disable | enable) and protect your IP address.",
+  "background": {
+    "service_worker": "background.js"
+  },
+  "commands": {
+    "_execute_action": {}
+  },
+  "options_ui": {
+    "open_in_tab": true,
+    "page": "data/options/options.html"
+  },
+  "permissions": [
+    "privacy", 
+    "storage", 
+    "contextMenus"
+  ],
+  "web_accessible_resources": [{
+    "matches": ["*://*/*"],
+    "resources": [
+      "data/content_script/page_context/media_devices.js",
+      "data/content_script/page_context/support_detection.js",
+      "data/content_script/page_context/additional_objects.js"
+    ]
+  }],
+  "action": {
+    "default_title": "WebRTC Control",
+    "default_icon": {
+      "16": "data/icons/16.png",
+      "32": "data/icons/32.png",
+      "48": "data/icons/48.png",
+      "64": "data/icons/64.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "all_frames": true,
+      "matches": ["*://*/*"],
+      "run_at": "document_start",
+      "js": ["data/content_script/inject.js"]
+    }
+  ],
+  "icons": {
+    "16": "data/icons/16.png",
+    "32": "data/icons/32.png",
+    "48": "data/icons/48.png",
+    "64": "data/icons/64.png",
+    "128": "data/icons/128.png"
+  }
+}

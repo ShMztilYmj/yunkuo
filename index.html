@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" sizes="256x256" href="/app-icon.png" />
+    <title>云阔</title>
+    <script>
+      /* 首帧之前确定主题：否则样式表按暗色默认值绘制，亮色用户会先看到一次黑屏。
+         悬浮条 / 托盘是透明小窗，不参与启动画面。 */
+      (function () {
+        var surface = new URLSearchParams(location.search).get("view");
+        if (surface === "tray" || surface === "hud") {
+          document.documentElement.dataset.surface = surface;
+        }
+        var mode = "light";
+        try {
+          mode = localStorage.getItem("coc.theme") || "light";
+        } catch (error) {
+          /* 隐私模式等场景按亮色启动 */
+        }
+        var dark =
+          mode === "dark" ||
+          (mode === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+        document.documentElement.dataset.theme = dark ? "dark" : "light";
+      })();
+    </script>
+    <style>
+      /* 启动画面：原生窗口在首帧前保持隐藏，显示时已经是有底色的画面，不再白屏/黑屏。 */
+      html {
+        background: #f6f3ef;
+        color-scheme: light;
+      }
+      html[data-theme="dark"] {
+        background: #191917;
+        color-scheme: dark;
+      }
+      html[data-surface="tray"],
+      html[data-surface="hud"] {
+        background: transparent;
+      }
+      html[data-surface="tray"] #boot,
+      html[data-surface="hud"] #boot {
+        display: none;
+      }
+      #boot {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        background: #f6f3ef;
+        color: #242423;
+        font: 500 13px/1.5 "Microsoft YaHei UI", "Segoe UI Variable Text", "Segoe UI", sans-serif;
+        transition: opacity 0.18s ease;
+      }
+      html[data-theme="dark"] #boot {
+        background: #191917;
+        color: #f1f0ee;
+      }
+      html[data-surface="tray"] #boot,
+      html[data-surface="hud"] #boot {
+        display: none;
+      }
+      #boot img {
+        width: 56px;
+        height: 56px;
+        border-radius: 14px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.16);
+      }
+      #boot .boot-track {
+        position: relative;
+        width: 128px;
+        height: 2px;
+        overflow: hidden;
+        border-radius: 2px;
+        background: #e7e5df;
+      }
+      html[data-theme="dark"] #boot .boot-track {
+        background: #2c2b28;
+      }
+      #boot .boot-track::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 42%;
+        border-radius: 2px;
+        background: #242423;
+        animation: boot-slide 1.2s ease-in-out infinite;
+      }
+      html[data-theme="dark"] #boot .boot-track::after {
+        background: #f1f0ee;
+      }
+      #boot.boot-done {
+        opacity: 0;
+        pointer-events: none;
+      }
+      @keyframes boot-slide {
+        0% {
+          transform: translateX(-110%);
+        }
+        100% {
+          transform: translateX(340%);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #boot .boot-track::after {
+          width: 100%;
+          animation: none;
+          opacity: 0.35;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <div id="boot" aria-hidden="true">
+      <img src="/app-icon.png" alt="" draggable="false" />
+      <span class="boot-track"></span>
+    </div>
+    <script type="module" src="/src/app/main.tsx"></script>
+  </body>
+</html>

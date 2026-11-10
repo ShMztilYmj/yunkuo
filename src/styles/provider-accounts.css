@@ -1,0 +1,1083 @@
+/* 服务商与 Agent 对照表：整页固定为一屏，只有表体在内部滚动。
+   行高、内边距按视口高度收缩，窄容器自动把「列」换成卡片列表。 */
+
+.ai-providers-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--page-gap);
+  width: 100%;
+  max-width: var(--page-max);
+  height: 100%;
+  min-height: 0;
+  margin-inline: auto;
+  padding: var(--page-pad-top) var(--page-pad-x) var(--page-pad-bottom);
+  overflow: auto;
+  color: var(--color-zinc-100);
+  container-name: ai-providers;
+  container-type: inline-size;
+}
+/* 页头由共用 <PageHeader /> 渲染；旧的自定义标题区样式保留给容器查询之外的
+   说明文字（只用于页头说明行）。 */
+.ai-providers-timestamp {
+  color: var(--color-zinc-500);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+.ai-providers-refresh {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 0 13px;
+  border-radius: 10px;
+  font-size: 12px;
+}
+.ai-providers-refresh:disabled {
+  opacity: 0.5;
+}
+.ai-providers-warning {
+  display: flex;
+  flex-shrink: 0;
+  gap: 9px;
+  padding: 9px 12px;
+  border: 1px solid color-mix(in srgb, var(--color-amber-400) 34%, var(--line));
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--color-amber-400) 7%, transparent);
+  color: var(--color-amber-300);
+  font-size: 11px;
+  line-height: 1.7;
+}
+.ai-providers-warning svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.ai-providers-warning p + p {
+  margin-top: 3px;
+}
+.ai-providers-loading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 28px 4px;
+  color: var(--color-zinc-500);
+  font-size: 12px;
+}
+.ai-providers-board {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: 0 1px 2px #00000008;
+}
+.ai-providers-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.ai-providers-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 12px;
+}
+.ai-providers-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  padding: clamp(8px, 1.2vh, 12px) clamp(8px, 1vw, 14px);
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--surface-soft) 76%, var(--surface));
+  color: var(--color-zinc-300);
+  font-weight: 500;
+  text-align: left;
+  vertical-align: middle;
+}
+.ai-providers-table thead th.ai-providers-corner {
+  width: clamp(44px, 4.2vw, 62px);
+  padding-inline: 6px;
+  color: var(--color-zinc-500);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-align: center;
+  white-space: nowrap;
+}
+.ai-providers-table tbody th {
+  padding: clamp(5px, 0.85vh, 9px) 6px;
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 60%, transparent);
+  background: color-mix(in srgb, var(--surface-soft) 46%, var(--surface));
+  color: var(--color-zinc-600);
+  font-size: 10px;
+  font-weight: 500;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.ai-providers-table tbody td {
+  padding: clamp(5px, 0.9vh, 9px) clamp(8px, 1vw, 14px);
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 60%, transparent);
+  vertical-align: top;
+}
+.ai-providers-table tbody tr:last-child > * {
+  border-bottom: 0;
+}
+.ai-providers-agent {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+.ai-providers-agent-bot {
+  flex-shrink: 0;
+}
+.ai-providers-agent-copy {
+  min-width: 0;
+}
+.ai-providers-agent-copy strong {
+  display: block;
+  overflow: hidden;
+  color: var(--color-zinc-100);
+  font-size: 12.5px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ai-providers-agent-copy span {
+  display: block;
+  overflow: hidden;
+  margin-top: 3px;
+  color: var(--color-zinc-500);
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* 表头的 Agent 名与运行状态同一行；状态徽标不参与截断。 */
+.ai-providers-agent-copy .ai-providers-agent-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  margin-top: 0;
+  overflow: visible;
+  white-space: normal;
+}
+.ai-providers-agent-line strong {
+  min-width: 0;
+}
+.ai-providers-run {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 4px;
+  margin-top: 0;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-zinc-100) 6%, transparent);
+  color: var(--color-zinc-500);
+  font-size: 9.5px;
+  line-height: 15px;
+  white-space: nowrap;
+}
+.ai-providers-run i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-zinc-500);
+}
+.ai-providers-run[data-state="on"] {
+  background: color-mix(in srgb, var(--color-emerald-400) 13%, transparent);
+  color: var(--color-emerald-400);
+}
+.ai-providers-run[data-state="on"] i {
+  background: var(--color-emerald-400);
+}
+.ai-providers-run[data-state="off"] i {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--color-zinc-500);
+}
+.ai-providers-run[data-state="unknown"] {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--color-zinc-700);
+  color: var(--color-zinc-600);
+}
+.ai-providers-run[data-state="unknown"] i {
+  display: none;
+}
+.provider-account-wrap {
+  min-width: 0;
+  margin: -4px -6px;
+  padding: 4px 6px;
+  border-radius: 8px;
+  transition:
+    background-color 120ms ease,
+    box-shadow 120ms ease;
+}
+.provider-account-wrap:hover {
+  background: color-mix(in srgb, var(--color-zinc-100) 5%, transparent);
+}
+/* 选中项只在本单元格留一层底色：详情在页面下侧，行内不再就地撑高。 */
+.provider-account-wrap[data-selected] {
+  background: color-mix(in srgb, var(--color-zinc-100) 9%, transparent);
+  box-shadow: inset 0 0 0 1px
+    color-mix(in srgb, var(--color-zinc-100) 16%, transparent);
+}
+.provider-account {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+/* 真实登记是一个可展开的按钮：命中区域只覆盖这一项，不再高亮整行。 */
+button.provider-account {
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+button.provider-account:focus-visible {
+  outline: 2px solid
+    color-mix(in srgb, var(--color-emerald-400) 55%, transparent);
+  outline-offset: 2px;
+}
+.provider-account > * {
+  min-width: 0;
+  line-height: 1.4;
+}
+.provider-account-provider {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow: hidden;
+  color: var(--color-zinc-400);
+  font-size: 10.5px;
+  white-space: nowrap;
+}
+.provider-account-provider > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.provider-account-provider i {
+  flex: 0 0 auto;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-zinc-600);
+}
+.provider-account-name {
+  overflow: hidden;
+  color: var(--color-zinc-200);
+  font-size: 12px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.provider-account-detail {
+  overflow: hidden;
+  color: var(--color-zinc-500);
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* 当前正在使用的服务商：只加一枚窄标签，不改变单元格的排版节奏。 */
+.provider-account-active {
+  flex: 0 0 auto;
+  margin-left: 1px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-emerald-400) 14%, transparent);
+  color: var(--color-emerald-400);
+  font-size: 9px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 14px;
+  white-space: nowrap;
+}
+/* 单元格额度摘要：窗口百分比或余额，完整读数在详情卡片。 */
+.provider-account-quota {
+  display: flex;
+  gap: 0 10px;
+  overflow: hidden;
+  color: var(--color-zinc-500);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.provider-account-quota-item {
+  flex: 0 0 auto;
+}
+.provider-account-quota b {
+  color: var(--color-zinc-400);
+  font-weight: 600;
+}
+.provider-account-quota b[data-tone="good"] {
+  color: var(--color-emerald-400);
+}
+.provider-account-quota b[data-tone="warning"] {
+  color: var(--color-amber-400);
+}
+.provider-account-quota b[data-tone="danger"] {
+  color: var(--color-red-400);
+}
+.provider-account[data-state="active"] .provider-account-provider i {
+  background: var(--color-emerald-400);
+}
+.provider-account[data-state="configured"] .provider-account-provider i {
+  background: var(--color-blue-400);
+}
+.provider-account[data-state="empty"] .provider-account-provider i {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--color-zinc-600);
+}
+.provider-account[data-state="unsynced"] .provider-account-provider i {
+  background: transparent;
+  box-shadow: none;
+  border: 1px dashed var(--color-zinc-500);
+}
+.provider-account[data-state="empty"] .provider-account-name {
+  color: var(--color-zinc-500);
+  font-weight: 400;
+}
+.provider-account[data-state="error"] .provider-account-provider i {
+  background: var(--color-amber-400);
+}
+.provider-account[data-state="managed"] .provider-account-provider i {
+  background: var(--color-zinc-500);
+}
+.ai-providers-blank {
+  display: block;
+  color: var(--color-zinc-700);
+  font-size: 12px;
+  text-align: center;
+}
+/* 下侧详情卡片：和上方对照表卡片分开的一张独立卡片。空态保持预留高度，
+   选中带额度时按内容长高（有上限），表格区域随之收缩并保持内部滚动。 */
+.ai-providers-detail {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  gap: 8px;
+  min-height: clamp(118px, 16vh, 138px);
+  max-height: min(46vh, 340px);
+  padding: 11px clamp(12px, 1.2vw, 18px) 12px;
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: 0 1px 2px #00000008;
+}
+.ai-providers-detail[data-mode="removed"] {
+  border-color: color-mix(in srgb, var(--color-emerald-400) 26%, var(--line));
+  background: color-mix(in srgb, var(--color-emerald-400) 4%, var(--surface));
+}
+.ai-providers-detail-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 62%, transparent);
+}
+.ai-providers-detail-eyebrow {
+  color: var(--color-zinc-600);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+/* 标题行钉在卡片顶部，正文在剩余高度里居中：内容多少都不会吊在上沿。 */
+.ai-providers-detail-body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  justify-content: safe center;
+  gap: 8px;
+  min-width: 0;
+}
+.ai-providers-detail-identity {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.ai-providers-detail-identity strong {
+  overflow: hidden;
+  color: var(--color-zinc-100);
+  font-size: 13px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ai-providers-detail-dot {
+  flex: 0 0 auto;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-zinc-600);
+}
+.ai-providers-detail-dot[data-state="active"] {
+  background: var(--color-emerald-400);
+}
+.ai-providers-detail-dot[data-state="configured"] {
+  background: var(--color-blue-400);
+}
+.ai-providers-detail-dot[data-state="empty"] {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--color-zinc-600);
+}
+.ai-providers-detail-dot[data-state="error"] {
+  background: var(--color-amber-400);
+}
+.ai-providers-detail-dot[data-state="managed"] {
+  background: var(--color-zinc-500);
+}
+.ai-providers-detail-dot[data-state="unsynced"] {
+  background: transparent;
+  box-shadow: none;
+  border: 1px dashed var(--color-zinc-500);
+}
+.ai-providers-detail-account {
+  overflow: hidden;
+  color: var(--color-zinc-500);
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ai-providers-detail-chip {
+  flex: 0 0 auto;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-zinc-100) 7%, transparent);
+  color: var(--color-zinc-400);
+  font-size: 10px;
+  font-style: normal;
+  white-space: nowrap;
+}
+.ai-providers-detail-chip[data-state="active"] {
+  background: color-mix(in srgb, var(--color-emerald-400) 12%, transparent);
+  color: var(--color-emerald-400);
+}
+.ai-providers-detail-chip[data-state="configured"] {
+  background: color-mix(in srgb, var(--color-blue-400) 12%, transparent);
+  color: var(--color-blue-400);
+}
+.ai-providers-detail-chip[data-state="empty"] {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--color-zinc-600);
+  color: var(--color-zinc-500);
+}
+.ai-providers-detail-chip[data-state="error"] {
+  background: color-mix(in srgb, var(--color-amber-400) 14%, transparent);
+  color: var(--color-amber-400);
+}
+.ai-providers-detail-chip[data-state="managed"] {
+  color: var(--color-zinc-500);
+}
+.ai-providers-detail-chip[data-state="unsynced"] {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--color-zinc-600);
+  color: var(--color-zinc-500);
+}
+.ai-providers-detail-actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+.ai-providers-detail-remove,
+.ai-providers-detail-undo {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 24px;
+  padding: 0 9px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--color-zinc-300);
+  font-size: 11px;
+  white-space: nowrap;
+}
+.ai-providers-detail-remove:hover {
+  border-color: color-mix(in srgb, var(--color-red-400) 45%, var(--line));
+  background: color-mix(in srgb, var(--color-red-400) 10%, transparent);
+  color: var(--color-red-300);
+}
+.ai-providers-detail-undo:hover {
+  border-color: color-mix(in srgb, var(--color-emerald-400) 40%, var(--line));
+  background: color-mix(in srgb, var(--color-emerald-400) 9%, transparent);
+  color: var(--color-emerald-400);
+}
+.ai-providers-detail-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--color-zinc-500);
+}
+.ai-providers-detail-close:hover {
+  background: var(--hover);
+  color: var(--color-zinc-200);
+}
+.ai-providers-detail-lock {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--color-zinc-600);
+  font-size: 10px;
+  white-space: nowrap;
+}
+.ai-providers-detail-note {
+  margin: 0;
+  color: var(--color-zinc-500);
+  font-size: 10.5px;
+  line-height: 1.7;
+}
+.ai-providers-detail-facts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 22px;
+  margin: 0;
+}
+.ai-providers-detail-facts > div {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  min-width: 0;
+  max-width: 100%;
+}
+.ai-providers-detail-facts dt {
+  flex: 0 0 auto;
+  color: var(--color-zinc-600);
+  font-size: 10px;
+}
+.ai-providers-detail-facts dd {
+  min-width: 0;
+  margin: 0;
+  color: var(--color-zinc-300);
+  font-size: 11px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.ai-providers-detail-empty {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  max-width: 620px;
+  margin-inline: auto;
+}
+.ai-providers-detail-empty p {
+  margin: 0;
+  color: var(--color-zinc-500);
+  font-size: 11px;
+  line-height: 1.7;
+}
+/* 额度块：服务商详情与悬浮条共用这一份样式。
+   订阅制一行一个窗口（读数放大、进度条在下），按量付费只给余额。 */
+.provider-quota {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 780px;
+  padding-top: 9px;
+  border-top: 1px dashed color-mix(in srgb, var(--line) 70%, transparent);
+}
+/* 悬浮条里没有上方的身份行，额度块就是这一段的第一项：不要多余的分隔线。 */
+.provider-quota:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+.provider-quota-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.provider-quota-head strong {
+  overflow: hidden;
+  color: var(--color-zinc-200);
+  font-size: 12px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.provider-quota-badge,
+.provider-quota-mode {
+  flex: 0 0 auto;
+  padding: 0 5px;
+  border-radius: 999px;
+  font-size: 9px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 15px;
+  white-space: nowrap;
+}
+.provider-quota-badge {
+  background: color-mix(in srgb, var(--color-emerald-400) 14%, transparent);
+  color: var(--color-emerald-400);
+}
+.provider-quota-mode {
+  background: color-mix(in srgb, var(--color-zinc-100) 7%, transparent);
+  color: var(--color-zinc-500);
+}
+/* 宽卡片里窗口并排，悬浮条里自动落成一列：同一份组件，按可用宽度排版。 */
+.provider-quota-windows {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 10px 24px;
+  min-width: 0;
+}
+.provider-quota-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.provider-quota-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 6px;
+  min-width: 0;
+}
+.provider-quota-label {
+  flex: 0 0 auto;
+  color: var(--color-zinc-500);
+  font-size: 11px;
+  white-space: nowrap;
+}
+.provider-quota-reset {
+  flex: 0 0 auto;
+  margin-left: auto;
+  color: var(--color-zinc-600);
+  font-size: 9.5px;
+  white-space: nowrap;
+}
+.provider-quota-value {
+  color: var(--color-emerald-400);
+  font-size: 18px;
+  font-weight: 650;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+}
+.provider-quota-value small {
+  margin-left: 1px;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+.provider-quota-value[data-tone="warning"] {
+  color: var(--color-amber-400);
+}
+.provider-quota-value[data-tone="danger"] {
+  color: var(--color-red-300);
+}
+.provider-quota-unit {
+  color: var(--color-zinc-500);
+  font-size: 10px;
+}
+.provider-quota-track {
+  width: 100%;
+  height: 6px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-zinc-100) 8%, transparent);
+}
+.provider-quota-track > i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--color-emerald-400);
+  transition: width 240ms ease;
+}
+.provider-quota-track > i[data-tone="warning"] {
+  background: var(--color-amber-400);
+}
+.provider-quota-track > i[data-tone="danger"] {
+  background: var(--color-red-400);
+}
+/* 按量付费：没有窗口条，只把「还剩多少钱」写清楚。 */
+.provider-quota-balance-block {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+}
+.provider-quota-amounts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 22px;
+  margin: 0;
+}
+.provider-quota-amounts > div {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+}
+.provider-quota-amounts dt {
+  color: var(--color-zinc-500);
+  font-size: 11px;
+}
+.provider-quota-amounts dd {
+  margin: 0;
+  color: var(--color-zinc-100);
+  font-size: 18px;
+  font-weight: 650;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+}
+.provider-quota-empty {
+  margin: 0;
+  color: var(--color-zinc-600);
+  font-size: 10px;
+}
+.provider-quota-sync {
+  margin: 0;
+  color: var(--color-zinc-600);
+  font-size: 9.5px;
+  line-height: 1.6;
+}
+/* 工具卡上的紧凑额度条：窗口一行一条、读数只留「剩余」，服务商落款压在最后。
+   Codex 卡与 Claude 卡共用这一份，按 344px 卡宽收敛，不再各自实现一套。 */
+.provider-quota.is-compact {
+  gap: 3px;
+  max-width: none;
+  padding-top: 0;
+  border-top: 0;
+}
+.provider-quota.is-compact .provider-quota-windows {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 5px;
+}
+.provider-quota.is-compact .provider-quota-row {
+  gap: 3px;
+}
+.provider-quota.is-compact .provider-quota-compact-line {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 0;
+  color: var(--color-zinc-500);
+  font-size: 10px;
+  line-height: 1.35;
+}
+.provider-quota.is-compact .provider-quota-compact-label {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.provider-quota.is-compact .provider-quota-compact-value {
+  flex: 0 0 auto;
+  color: var(--color-zinc-300);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.provider-quota.is-compact .provider-quota-compact-value[data-tone="warning"] {
+  color: var(--color-amber-400);
+}
+.provider-quota.is-compact .provider-quota-compact-value[data-tone="danger"] {
+  color: var(--color-red-300);
+}
+.provider-quota.is-compact .provider-quota-compact-value[data-tone="muted"] {
+  color: var(--color-zinc-600);
+}
+.provider-quota.is-compact .provider-quota-track {
+  height: 4px;
+}
+.provider-quota.is-compact .provider-quota-track > i[data-tone="muted"] {
+  background: var(--color-zinc-600);
+}
+.provider-quota.is-compact .provider-quota-compact-balance {
+  margin: 0;
+  color: var(--color-zinc-200);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+.provider-quota.is-compact .provider-quota-compact-empty {
+  margin: 0;
+  color: var(--color-zinc-600);
+  font-size: 10px;
+}
+/* 服务商落款：哪一家的读数、算不算「使用中」。有读数与空状态共用这一行。 */
+.provider-quota-caption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 3px 6px;
+  margin: 0;
+  color: var(--color-zinc-600);
+  font-size: 9px;
+  line-height: 1.4;
+}
+.provider-quota-caption-provider {
+  overflow: hidden;
+  max-width: 100%;
+  color: var(--color-zinc-500);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.provider-quota-caption .provider-quota-badge {
+  padding: 0 4px;
+  font-size: 8.5px;
+  line-height: 13px;
+}
+.provider-quota-caption-note {
+  color: var(--color-zinc-600);
+}
+.ai-providers-detail-mark {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--color-zinc-100) 6%, transparent);
+  color: var(--color-zinc-500);
+}
+.ai-providers-detail-mark.is-ok {
+  background: color-mix(in srgb, var(--color-emerald-400) 12%, transparent);
+  color: var(--color-emerald-400);
+}
+.ai-providers-foot {
+  display: flex;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px 16px;
+  padding: clamp(8px, 1.2vh, 13px) clamp(10px, 1.2vw, 16px);
+  border-top: 1px solid var(--line);
+  background: color-mix(in srgb, var(--surface-soft) 46%, var(--surface));
+}
+.ai-providers-foot > p {
+  flex: 1 1 320px;
+  margin: 0;
+  color: var(--color-zinc-500);
+  font-size: 10.5px;
+  line-height: 1.7;
+}
+.ai-providers-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ai-providers-legend li {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--color-zinc-500);
+  font-size: 10px;
+}
+.ai-providers-legend i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-zinc-600);
+}
+.ai-providers-legend li[data-state="active"] i {
+  background: var(--color-emerald-400);
+}
+.ai-providers-legend li[data-state="configured"] i {
+  background: var(--color-blue-400);
+}
+.ai-providers-legend li[data-state="empty"] i {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--color-zinc-600);
+}
+.ai-providers-legend li[data-state="error"] i {
+  background: var(--color-amber-400);
+}
+.ai-providers-legend li[data-state="managed"] i {
+  background: var(--color-zinc-500);
+}
+.ai-providers-legend li[data-state="unsynced"] i {
+  background: transparent;
+  box-shadow: none;
+  border: 1px dashed var(--color-zinc-500);
+}
+.ai-providers-links {
+  display: flex;
+  gap: 13px;
+}
+.ai-providers-links a {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--color-zinc-400);
+  font-size: 11px;
+  white-space: nowrap;
+}
+.ai-providers-links a:hover {
+  color: var(--color-zinc-100);
+}
+/* 全部恢复：与页脚链接同一行、同一字重，不抢「启动工具」的显眼度。 */
+.ai-providers-restore {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-zinc-500);
+  font-size: 11px;
+  white-space: nowrap;
+}
+.ai-providers-restore:hover {
+  color: var(--color-zinc-200);
+}
+
+/* 窄容器：列切换成每个 Agent 一张卡，卡内保持登记顺序。 */
+.ai-providers-cards {
+  display: none;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  gap: 10px;
+  padding: 12px;
+  align-content: start;
+}
+.ai-provider-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  padding: 11px 12px 6px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface-soft) 55%, var(--surface));
+}
+.ai-provider-card-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.ai-provider-card-list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ai-provider-card-list > li {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr);
+  gap: 8px;
+  padding: 7px 0;
+  border-top: 1px solid color-mix(in srgb, var(--line) 55%, transparent);
+}
+.ai-provider-card-list > li:first-child {
+  border-top: 0;
+}
+.ai-provider-card-index {
+  color: var(--color-zinc-600);
+  font-size: 10px;
+  line-height: 1.45;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+@container ai-providers (max-width: 780px) {
+  .ai-providers-table {
+    display: none;
+  }
+  .ai-providers-cards {
+    display: grid;
+  }
+}
+@container ai-providers (min-width: 781px) and (max-width: 980px) {
+  .ai-providers-page:is(
+      [data-agents="5"],
+      [data-agents="6"],
+      [data-agents="7"],
+      [data-agents="8"],
+      [data-agents="9"]
+    )
+    .ai-providers-table {
+    display: none;
+  }
+  .ai-providers-page:is(
+      [data-agents="5"],
+      [data-agents="6"],
+      [data-agents="7"],
+      [data-agents="8"],
+      [data-agents="9"]
+    )
+    .ai-providers-cards {
+    display: grid;
+  }
+}
+@container ai-providers (max-width: 720px) {
+  .ai-providers-foot > p {
+    flex-basis: 100%;
+  }
+  .ai-providers-detail-facts {
+    gap: 2px 18px;
+  }
+}
+@container ai-providers (max-width: 460px) {
+  .ai-providers-cards {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ai-providers-detail {
+    padding-inline: 12px;
+  }
+}
+
+/* 页头折行不再写在本页：四个模块统一由 page-head.css 的共用规则决定，
+   避免这一页比其他页早折行、标题位置对不上。 */
+
+/* 矮窗口：表体行高收紧，保证六行登记仍在一屏内；详情卡片下限同步收小。 */
+@media (max-height: 800px) {
+  .ai-providers-table thead th {
+    padding-block: clamp(6px, 0.9vh, 10px);
+  }
+  .ai-providers-table tbody td,
+  .ai-providers-table tbody th {
+    padding-block: clamp(3px, 0.6vh, 7px);
+  }
+  .ai-providers-detail {
+    min-height: 112px;
+    max-height: 44vh;
+  }
+}
+@media (max-height: 660px) {
+  .ai-providers-foot > p {
+    display: none;
+  }
+  .ai-providers-legend {
+    display: none;
+  }
+  .ai-providers-detail {
+    min-height: 104px;
+    padding-block: 8px;
+  }
+}
+
+/* 窄容器（卡片列表）字段会折行：卡片按内容撑开，只保留下限高度。 */
+@container ai-providers (max-width: 720px) {
+  .ai-providers-detail {
+    min-height: 112px;
+    max-height: 46vh;
+  }
+  .provider-quota-label {
+    flex-basis: 38px;
+  }
+}

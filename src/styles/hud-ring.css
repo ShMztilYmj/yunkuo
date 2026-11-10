@@ -1,0 +1,34 @@
+.hud-ring {
+  position: relative;
+  display: block;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+}
+.hud-ring-track {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke-width: 3;
+  pointer-events: none;
+}
+.hud-ring-base {
+  stroke: color-mix(in srgb, var(--color-zinc-500) 30%, var(--workspace));
+}
+.hud-ring-progress {
+  stroke: var(--quota-color, #258563);
+}
+.hud-ring-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hud-status-ring.danger[data-known="false"] .hud-ring-base {
+  stroke: var(--quota-color);
+}

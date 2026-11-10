@@ -1,0 +1,49 @@
+{
+  "name": "yunkuo",
+  "private": true,
+  "version": "0.2.14",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "typecheck": "tsc --noEmit",
+    "preview": "vite preview",
+    "tauri": "tauri",
+    "test": "node scripts/test-rust.mjs",
+    "test:live": "cargo test --manifest-path src-tauri/Cargo.toml --lib -- --ignored --test-threads=1",
+    "test:frontend": "node --import ./tests/ts-resolve.mjs --test \"tests/*.test.mjs\"",
+    "check:scripts": "node scripts/check-scripts.mjs",
+    "service:prepare": "node scripts/prepare-service.mjs",
+    "build:portable": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-portable.ps1",
+    "test:ui-resources": "node scripts/test-ui-resources.mjs",
+    "test:hud": "node scripts/test-agent-hud.mjs",
+    "test:packaged": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-packaged-overview.ps1",
+    "measure:ui": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/measure-ui-resources.ps1",
+    "verify": "pnpm run check:scripts && pnpm run typecheck && pnpm run test:frontend && pnpm run test",
+    "format": "cargo fmt --manifest-path src-tauri/Cargo.toml && prettier --write \"src/**/*.{ts,tsx,css}\" \"scripts/**/*.mjs\"",
+    "format:check": "cargo fmt --manifest-path src-tauri/Cargo.toml --check && prettier --check \"src/**/*.{ts,tsx,css}\" \"scripts/**/*.mjs\""
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2",
+    "@tauri-apps/plugin-dialog": "^2.8.2",
+    "@tauri-apps/plugin-opener": "^2",
+    "lucide-react": "^1.55.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-router-dom": "^7.18.4",
+    "zustand": "^5.0.15"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@tauri-apps/cli": "^2",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "@vitejs/plugin-react": "^6.0.2",
+    "playwright-core": "1.62.1",
+    "prettier": "^3.9.10",
+    "tailwindcss": "^4.3.3",
+    "typescript": "~6.0.3",
+    "vite": "^8.0.16"
+  },
+  "packageManager": "pnpm@12.11.2"
+}

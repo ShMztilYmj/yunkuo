@@ -1,0 +1,266 @@
+/* ---------- 维护页 · 新手引导 ----------
+   每一步只放三块：「怎么做」的编号动作、「做到就算过」的判定灯、「别踩」的一行警告。
+   一块一行，正文 11~12px；不再有长段落、示意图和折叠问答。
+   语义色沿用本页自己的三档，亮色主题下压深一档，白底上也要读得清。 */
+
+.maintenance-page {
+  --guide-ok: #4a9d76;
+  --guide-warn: #c08a45;
+  --guide-bad: #b95d57;
+}
+
+html[data-theme="light"] .maintenance-page {
+  --guide-ok: #2c7a55;
+  --guide-warn: #96631a;
+  --guide-bad: #a24742;
+}
+
+/* 引导卡内部不再套卡片，靠间距和发丝线分块 */
+.maintenance-step.is-guide {
+  gap: 12px;
+  padding-bottom: 16px;
+}
+
+.g-guide {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ---------- 一块小节的标题 ---------- */
+
+.g-block {
+  min-width: 0;
+}
+
+.g-block + .g-block {
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.g-block-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.g-block-head h3 {
+  margin: 0;
+  color: var(--color-zinc-200);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.g-block-head p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.g-block[data-tone="warn"] .g-block-head h3 {
+  color: var(--guide-bad);
+}
+
+/* ---------- 怎么做：一行一步 ---------- */
+
+.g-steps {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  flex-direction: column;
+  gap: 1px;
+  list-style: none;
+}
+
+.g-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 6px 8px;
+  border-radius: 10px;
+  transition: background-color 0.14s ease;
+}
+
+.g-step:hover {
+  background: color-mix(in srgb, var(--proxy-page-accent) 5%, transparent);
+}
+
+.g-step-num {
+  display: inline-flex;
+  width: 20px;
+  height: 20px;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--proxy-page-accent) 13%, transparent);
+  color: var(--proxy-page-accent-strong);
+  font-size: 10.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.g-step-copy {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: 1px;
+}
+
+.g-step-copy strong {
+  color: var(--color-zinc-200);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+.g-step-copy small {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.g-step-go {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 3px;
+  margin-top: 1px;
+  padding: 4px 9px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--color-zinc-400);
+  font-size: 10.5px;
+  line-height: 1.4;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.g-step-go:hover {
+  border-color: color-mix(in srgb, var(--proxy-page-accent) 45%, var(--line));
+  color: var(--proxy-page-accent-strong);
+}
+
+.g-step-go > svg {
+  width: 11px;
+  height: 11px;
+}
+
+/* ---------- 做到就算过：灯的判定 ---------- */
+
+.g-checks {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  flex-direction: column;
+  gap: 1px;
+  list-style: none;
+}
+
+.g-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 4px 8px;
+  border-radius: 9px;
+}
+
+.g-dot {
+  width: 7px;
+  height: 7px;
+  flex: none;
+  margin-top: 6px;
+  border: 1.5px solid var(--color-zinc-600);
+  border-radius: 999px;
+  background: transparent;
+}
+
+.g-check[data-tone="ok"] .g-dot {
+  border-color: var(--guide-ok);
+  background: var(--guide-ok);
+}
+
+.g-check[data-tone="todo"] .g-dot {
+  border-color: var(--guide-warn);
+  background: color-mix(in srgb, var(--guide-warn) 45%, transparent);
+}
+
+.g-check-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.g-check-copy strong {
+  color: var(--color-zinc-300);
+  font-size: 11.5px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.g-check-copy small {
+  color: var(--muted);
+  font-size: 10.5px;
+  line-height: 1.55;
+}
+
+.g-check[data-tone="ok"] .g-check-copy strong {
+  color: var(--color-zinc-200);
+}
+
+/* ---------- 别踩：一行一条 ---------- */
+
+.g-avoid {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  flex-direction: column;
+  gap: 3px;
+  list-style: none;
+}
+
+.g-avoid > li {
+  position: relative;
+  padding: 5px 9px 5px 24px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--guide-bad) 7%, transparent);
+  color: var(--color-zinc-300);
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.g-avoid > li::before {
+  position: absolute;
+  top: 5px;
+  left: 9px;
+  content: "×";
+  color: var(--guide-bad);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+/* 窄窗口：按钮换到正文下面一行，别把标题挤成两行 */
+@media (max-width: 720px) {
+  .g-step {
+    flex-wrap: wrap;
+  }
+
+  .g-step-go {
+    margin-left: 30px;
+  }
+}

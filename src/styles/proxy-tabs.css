@@ -1,0 +1,123 @@
+/* ---------- 代理页头：页签固定在右上 ----------
+   页签原先占一条独立的顶栏（ProxyShell 里的 h-14 行）；现在并进各子页页头，
+   贴在页头最右侧，页面动作（重启内核 / 刷新）排在它左边、同一行。左侧的图标、
+   标题与状态行位置不变，只占剩余宽度：状态行变长时在本列内换行，右侧页签与
+   动作永远留在同一行贴右上，不会被长文本挤到下一行。检测页有自己的折行规则。 */
+.proxy-page-head {
+  /* 折行后每一行各自靠右排：标题用 auto 外边距占住左侧，动作永远贴右边 */
+  justify-content: flex-end;
+}
+.proxy-page-head > .proxy-page-title {
+  margin-right: auto;
+}
+.proxy-page-head > .proxy-page-title > div {
+  min-width: 0;
+}
+.proxy-page-title h1 {
+  flex-wrap: wrap;
+  row-gap: 4px;
+}
+@media (min-width: 901px) {
+  .proxy-page-head:not(.detect-head) {
+    flex-wrap: nowrap;
+  }
+  .proxy-page-head:not(.detect-head) > .proxy-page-title {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  /* 右侧两件固定尺寸，标题先让位，所以按钮和页签不会掉行 */
+  .proxy-page-head:not(.detect-head) > .proxy-page-tabs {
+    flex: none;
+  }
+  .proxy-page-head:not(.detect-head) > .proxy-page-actions {
+    flex: 0 1 auto;
+    /* 收缩有下限：按钮和搜索框整体不能被压扁，只让标题先让位 */
+    min-width: min-content;
+    /* 动作区自身不折行：要么整块贴右，要么只让里面的搜索框收窄 */
+    flex-wrap: nowrap;
+  }
+  .proxy-page-head > .proxy-page-actions > .proxy-action {
+    flex: none;
+  }
+  /* 规则页的搜索框是唯一可压缩的动作项，窄窗口先收它，别去挤标题 */
+  .proxy-page-head .proxy-page-actions .proxy-search {
+    flex: 0 1 auto;
+    min-width: 150px;
+  }
+}
+.proxy-page-tabs {
+  display: flex;
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  align-items: center;
+  gap: 2px;
+  margin-left: auto;
+  padding: 2px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface-soft);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+.proxy-page-tabs::-webkit-scrollbar {
+  display: none;
+}
+.proxy-page-tab {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 5px;
+  height: 26px;
+  padding: 0 10px;
+  border-radius: 8px;
+  color: var(--color-zinc-500);
+  font-size: 11.5px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  transition:
+    color 0.14s ease,
+    background-color 0.14s ease;
+}
+.proxy-page-tab > svg {
+  width: 13px;
+  height: 13px;
+  opacity: 0.85;
+}
+.proxy-page-tab:hover {
+  color: var(--color-zinc-200);
+}
+.proxy-page-tab:focus-visible {
+  outline: 2px solid
+    color-mix(in srgb, var(--proxy-page-accent, #5b8fae) 55%, transparent);
+  outline-offset: 1px;
+}
+.proxy-page-tab[data-active="true"] {
+  background: var(--surface);
+  color: var(--color-zinc-100);
+  box-shadow: 0 1px 2px #0000000f;
+}
+.proxy-page-tab[data-active="true"] > svg {
+  color: var(--proxy-page-accent-strong, currentColor);
+  opacity: 1;
+}
+
+/* 窄一些的窗口收起页签图标，页签和页面动作才能留在同一行。 */
+@media (max-width: 1240px) {
+  .proxy-page-tab {
+    padding: 0 9px;
+  }
+  .proxy-page-tab > svg {
+    display: none;
+  }
+}
+
+/* 窄屏折行（标题独占一行、动作与页签排第二行）由 page-head.css 统一处理，
+   这里不再单独设置 order / margin，避免两个模块各折各的。 */
+@media (prefers-reduced-motion: reduce) {
+  .proxy-page-tab {
+    transition: none;
+  }
+}

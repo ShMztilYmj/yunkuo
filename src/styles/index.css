@@ -1,0 +1,44 @@
+@import "tailwindcss" source("../");
+
+/* ---------- 业务样式入口（唯一入口，仅被 src/main.tsx 引入）----------
+   @import 顺序 = 重构前构建产物里的实际层叠顺序：
+   主包 agent-bot → home → browser-bot → hud-ring → tooltip → proxy-bot → agent-hud
+   → app（原 src/index.css：@theme 与全局规则）→ tray → motion，
+   之后是异步路由块 AiTool / AiCapabilities / Environment 内的文件，块内先后不变。
+   Tailwind v4 的 @import "tailwindcss" 必须保持第一条。 */
+@import "./agent-bot.css";
+@import "./home.css";
+@import "./browser-bot.css";
+@import "./hud-ring.css";
+@import "./tooltip.css";
+@import "./proxy-bot.css";
+@import "./agent-hud.css";
+@import "./app.css";
+@import "./tray.css";
+@import "./motion.css";
+@import "./ai-tools.css";
+@import "./provider-accounts.css";
+@import "./codex-resume.css";
+@import "./tool-setup.css";
+@import "./capabilities.css";
+@import "./ai-capabilities.css";
+@import "./browser.css";
+@import "./team.css";
+@import "./team-motion.css";
+@import "./team-workbench.css";
+@import "./environment.css";
+@import "./confirm.css";
+/* 日期选择器：替代原生 date 控件的应用内日历（暗色/亮色都跟随主题令牌） */
+@import "./date-picker.css";
+/* 统一页头与页面骨架：四个模块共用同一份尺寸契约（排在 app.css 之后） */
+@import "./page-head.css";
+/* 代理页签：从独立顶栏并进页头右侧（必须排在 app.css 之后） */
+@import "./proxy-tabs.css";
+/* 设置页：分类栏 + 设置卡片的专属版式（排在 app.css 之后覆盖旧占位规则） */
+@import "./settings.css";
+/* 维护页：页面骨架沿用 page-head 的尺寸契约，这里只补清单行 */
+@import "./maintenance.css";
+/* 维护页 · 代理新手引导：编号小节 + 示意图（排在 maintenance.css 之后覆盖正文列宽） */
+@import "./maintenance-guide.css";
+/* 代理快捷卡：牌面式布局，覆盖 app.css 里 .proxy-status / .network-mode-* 的旧值 */
+@import "./proxy-status.css";

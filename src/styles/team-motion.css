@@ -1,0 +1,551 @@
+/* Group chat surfaces and interaction rhythm, scoped to the team workspace. */
+.team-page {
+  --team-ease: cubic-bezier(0.2, 0.75, 0.25, 1);
+  --team-layout-time: 240ms;
+}
+.team-page :is(h1, h2, h3, button, input, textarea, select) {
+  font-family: inherit;
+}
+.team-list-title > small,
+.team-detail-title > span {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: var(--chat-muted);
+  margin-bottom: 6px;
+}
+.team-list-title h2 {
+  font-size: 15px;
+}
+.team-detail-heading > .team-detail-title {
+  display: block;
+}
+.team-page :is(button, input, textarea, select):focus-visible {
+  outline: 2px solid var(--chat-accent);
+  outline-offset: 3px;
+}
+.team-room {
+  transition:
+    background-color 160ms,
+    border-color 160ms,
+    box-shadow 160ms,
+    transform 180ms var(--team-ease);
+}
+.team-room:before {
+  content: "";
+  position: absolute;
+  left: -1px;
+  top: 24px;
+  bottom: 24px;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: var(--chat-accent);
+  opacity: 0;
+  transform: scaleY(0.4);
+  transition:
+    opacity 160ms,
+    transform 200ms var(--team-ease);
+}
+.team-room.is-selected:before {
+  opacity: 1;
+  transform: scaleY(1);
+}
+.team-search {
+  transition:
+    background-color 160ms,
+    border-color 160ms,
+    box-shadow 160ms;
+}
+.team-search:focus-within {
+  background: var(--chat-panel);
+  border-color: var(--chat-accent-line);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--chat-accent) 6%, transparent);
+}
+.team-page .team-icon {
+  transition:
+    background-color 140ms,
+    color 140ms,
+    transform 180ms var(--team-ease),
+    box-shadow 180ms;
+}
+.team-header-actions > .team-icon.is-active {
+  border: 1px solid var(--chat-accent-line);
+}
+.team-lead-tag {
+  border-color: var(--chat-accent-line);
+  color: var(--chat-accent);
+  background: var(--chat-accent-soft);
+  font-size: 8px;
+}
+.team-bubble {
+  transition:
+    box-shadow 180ms,
+    border-color 180ms;
+}
+.team-tool-bubble {
+  background: color-mix(in srgb, #9b88b8 4%, var(--chat-bubble));
+  border-color: color-mix(in srgb, #9b88b8 20%, var(--chat-line));
+}
+.team-mcp-tag {
+  background: #a38cbb13;
+}
+.team-message.is-self .team-bubble {
+  box-shadow: 0 2px 5px #37542d06;
+}
+.team-message-meta {
+  margin-bottom: 8px;
+}
+.team-execution summary {
+  padding: 3px 5px;
+  border-radius: 5px;
+  transition:
+    background-color 140ms,
+    color 140ms;
+}
+.team-execution summary:hover {
+  background: var(--chat-accent-soft);
+  color: var(--chat-accent);
+}
+.team-execution summary > svg,
+.team-tool-bubble summary > svg,
+.team-detail summary > svg {
+  transition: transform 200ms var(--team-ease);
+}
+.team-execution[open] > summary > svg,
+.team-tool-bubble details[open] > summary > svg,
+.team-detail details[open] > summary > svg {
+  transform: rotate(180deg);
+}
+.team-composer {
+  transition:
+    border-color 180ms,
+    box-shadow 180ms,
+    background-color 180ms;
+}
+.team-composer:focus-within {
+  border-color: var(--chat-accent-line);
+  box-shadow: inset 0 2px 0
+    color-mix(in srgb, var(--chat-accent) 12%, transparent);
+}
+.team-composer.has-draft .team-recipient {
+  border-color: var(--chat-accent-line);
+}
+.team-recipient {
+  transition:
+    border-color 180ms,
+    background-color 180ms;
+}
+.team-checkbox {
+  padding: 4px 6px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  transition:
+    color 140ms,
+    background-color 140ms,
+    border-color 140ms;
+}
+.team-checkbox:has(input:checked) {
+  background: var(--chat-accent-soft);
+  border-color: var(--chat-accent-line);
+  color: var(--chat-accent);
+}
+.team-checkbox input {
+  accent-color: #638c6d;
+}
+.team-send {
+  transition:
+    background-color 140ms,
+    box-shadow 180ms,
+    transform 180ms var(--team-ease),
+    color 140ms;
+}
+.team-send > svg {
+  transition: transform 180ms var(--team-ease);
+}
+.team-send:disabled {
+  box-shadow: none;
+  border-color: transparent;
+}
+.team-emoji {
+  gap: 3px;
+}
+.team-detail {
+  transition:
+    width var(--team-layout-time) var(--team-ease),
+    box-shadow var(--team-layout-time);
+}
+.team-detail.is-resizing {
+  transition: none;
+}
+.team-detail-body {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
+  transition:
+    opacity 150ms ease,
+    transform var(--team-layout-time) var(--team-ease),
+    visibility 0s;
+}
+.team-detail.is-collapsed .team-detail-body {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(12px);
+  transition:
+    opacity 90ms ease,
+    transform var(--team-layout-time) var(--team-ease),
+    visibility 0s 90ms;
+}
+.team-detail-rail {
+  background: var(--chat-panel);
+}
+.team-detail-section {
+  transition:
+    box-shadow 180ms,
+    border-color 180ms;
+}
+.team-detail-section > h3 > button {
+  transition:
+    background-color 160ms,
+    color 160ms;
+}
+.team-detail-section > h3 > button:hover {
+  color: var(--chat-accent);
+  background: color-mix(in srgb, var(--chat-accent-soft) 45%, transparent);
+}
+.team-detail-section[data-expanded="false"] {
+  box-shadow: none;
+}
+.team-section-reveal {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition:
+    grid-template-rows var(--team-layout-time) var(--team-ease),
+    opacity 160ms ease;
+}
+.team-section-reveal[data-expanded="true"] {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+.team-section-reveal-inner {
+  min-height: 0;
+  overflow: hidden;
+}
+.team-section-content {
+  padding: 2px 12px 14px;
+}
+.team-detail .team-member-search {
+  transition:
+    background-color 160ms,
+    border-color 160ms,
+    box-shadow 160ms;
+}
+.team-detail .team-member-search:focus-within {
+  background: var(--chat-panel);
+  border-color: var(--chat-accent-line);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--chat-accent) 6%, transparent);
+}
+.team-member-face {
+  transition:
+    transform 200ms var(--team-ease),
+    box-shadow 200ms,
+    border-color 200ms;
+}
+.team-member-face img,
+.team-avatar-self > img {
+  transition: transform 200ms var(--team-ease);
+}
+.team-member-tile.is-selected .team-member-name {
+  color: var(--chat-accent);
+}
+.team-member-control > .team-member-face {
+  border-color: color-mix(in srgb, var(--chat-muted) 40%, transparent);
+  background: color-mix(in srgb, var(--chat-sidebar) 70%, transparent);
+}
+.team-members-more {
+  margin-top: 3px;
+  padding: 8px 0 1px;
+  font-size: 10px;
+}
+.team-members-more > svg {
+  transition: transform 200ms var(--team-ease);
+}
+.team-detail .team-member {
+  margin-top: 13px;
+  padding: 10px;
+  border-color: var(--chat-accent-line);
+  background: var(--chat-sidebar);
+}
+.team-member-heading strong {
+  overflow-wrap: anywhere;
+}
+.team-task:first-child {
+  padding-top: 0;
+}
+.team-task:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+.team-member-top strong {
+  line-height: 1.7;
+  font-size: 11px;
+}
+.team-member-top > span {
+  display: inline-block;
+  flex: none;
+  margin-top: 2px;
+  padding: 2px 5px;
+  border-radius: 5px;
+  background: var(--chat-sidebar);
+  font-size: 8px;
+}
+.team-member-top > span[data-status="completed"] {
+  color: var(--chat-accent);
+  background: var(--chat-accent-soft);
+}
+.team-member-top > span[data-status="submitted"] {
+  color: #aa8854;
+  background: #b8955810;
+}
+.team-member-top > span[data-status="failed"] {
+  background: #c67f7710;
+}
+.team-artifact {
+  transition:
+    border-color 160ms,
+    background-color 160ms,
+    transform 180ms var(--team-ease);
+}
+.team-artifact > span {
+  min-width: 0;
+}
+.team-artifact strong {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.team-toolset {
+  gap: 8px;
+}
+.team-toolset > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.team-toolset-mark {
+  flex: none;
+  width: 33px;
+  height: 33px;
+  padding: 7px;
+  border-radius: 9px;
+}
+.team-add-tool {
+  border-radius: 6px;
+  font-size: 10px;
+  padding: 8px 0 3px;
+}
+.team-auto-settings {
+  padding-top: 12px;
+}
+.team-detail .team-group-info {
+  padding: 7px 7px 0;
+}
+.team-detail .team-group-info > summary {
+  justify-content: space-between;
+  font-size: 10px;
+}
+.team-page :is(.team-messages, .team-detail-scroll, .team-room-list) {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--chat-muted) 22%, transparent)
+    transparent;
+}
+.team-page
+  :is(.team-messages, .team-detail-scroll, .team-room-list)::-webkit-scrollbar {
+  width: 5px;
+}
+.team-page
+  :is(
+    .team-messages,
+    .team-detail-scroll,
+    .team-room-list
+  )::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--chat-muted) 22%, transparent);
+}
+.team-page
+  :is(
+    .team-messages,
+    .team-detail-scroll,
+    .team-room-list
+  ):hover::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--chat-muted) 40%, transparent);
+}
+
+@keyframes team-message-enter {
+  from {
+    opacity: 0;
+    transform: translateY(9px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes team-pop-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes team-rail-enter {
+  from {
+    opacity: 0;
+    transform: translateX(5px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes team-toast-enter {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 7px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+@keyframes team-status-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 #79a78600;
+  }
+  50% {
+    box-shadow: 0 0 0 3px #79a78618;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .team-page .team-message.is-entering,
+  .team-page .team-system-message.is-entering {
+    animation: team-message-enter 280ms var(--team-ease) both;
+  }
+  .team-member-tile {
+    animation: team-pop-enter 220ms var(--team-ease) both;
+  }
+  .team-member-tile:nth-child(4n + 2) {
+    animation-delay: 20ms;
+  }
+  .team-member-tile:nth-child(4n + 3) {
+    animation-delay: 40ms;
+  }
+  .team-member-tile:nth-child(4n + 4) {
+    animation-delay: 60ms;
+  }
+  .team-detail-rail:not([hidden]) {
+    animation: team-rail-enter 180ms ease 60ms both;
+  }
+  .team-dialog[open],
+  .team-emoji,
+  .team-new-messages,
+  .team-member {
+    animation: team-pop-enter 200ms var(--team-ease) both;
+  }
+  .team-dialog::backdrop {
+    animation: team-backdrop-enter 180ms ease both;
+  }
+  .team-page > .team-toast {
+    animation: team-toast-enter 200ms var(--team-ease) both;
+  }
+  .team-page .team-running-dot {
+    animation: team-status-pulse 1.8s ease-in-out infinite;
+  }
+}
+@keyframes team-backdrop-enter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@media (hover: hover) {
+  .team-room:not(.is-selected):hover {
+    transform: translateY(-1px);
+  }
+  .team-page .team-icon:not(:disabled):hover {
+    transform: translateY(-1px);
+  }
+  .team-member-tile:not(:disabled):hover .team-member-face {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px #1b3c2410;
+  }
+  .team-member-tile:not(:disabled):hover .team-member-face img {
+    transform: rotate(-4deg) scale(1.04);
+  }
+  .team-message.is-self .team-avatar-self:hover > img {
+    transform: translateY(-1px) rotate(4deg);
+  }
+  .team-send:not(:disabled):hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px #294c3120;
+  }
+  .team-send:not(:disabled):hover > svg {
+    transform: translate(2px, -2px) rotate(-6deg);
+  }
+  .team-artifact:hover {
+    border-color: var(--chat-accent-line);
+    transform: translateX(2px);
+  }
+}
+@media (max-width: 1000px) {
+  .team-chat-room-mark {
+    display: none;
+  }
+  .team-detail-heading {
+    height: 69px;
+  }
+  .team-chat-heading h2 > span {
+    font-size: 9px;
+    padding: 2px 5px;
+    margin-left: 5px;
+  }
+  .team-recipient {
+    max-width: 185px;
+  }
+  .team-recipient select {
+    max-width: 150px;
+  }
+}
+@media (max-width: 700px) {
+  .team-list-title {
+    display: none;
+  }
+  .team-chat-heading h2 > span {
+    display: none;
+  }
+  .team-recipient {
+    max-width: 153px;
+  }
+  .team-recipient select {
+    max-width: 124px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .team-page *,
+  .team-page *::before,
+  .team-page *::after,
+  .team-dialog,
+  .team-dialog::backdrop {
+    animation: none !important;
+    transition-duration: 0s !important;
+    transition-delay: 0s !important;
+    scroll-behavior: auto !important;
+  }
+}

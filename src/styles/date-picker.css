@@ -1,0 +1,322 @@
+/* ---------- 应用内日期选择器（替代原生 <input type="date">） ----------
+   原生控件在 WebView 里弹的是英文白底日历（mm/dd/yyyy、Su Mo Tu…），
+   和深色面板完全脱节。这里触发器与相邻输入框同高同色，面板走 popover
+   进入 top layer，因此既不会被 <dialog showModal> 的遮罩压住，也不会被
+   弹窗卡片的 overflow 裁掉。所有颜色都用主题令牌，亮色自动跟随。 */
+
+/* 触发器：与 .profile-add-form input 对齐（32px 高、12px 字、同边框底色） */
+.dp-trigger {
+  display: flex;
+  width: 100%;
+  min-height: 32px;
+  align-items: center;
+  gap: 6px;
+  padding: 0 9px;
+  border: 1px solid var(--color-zinc-700);
+  border-radius: 8px;
+  background: var(--color-zinc-900);
+  color: var(--color-zinc-100);
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 1.2;
+  text-align: left;
+  transition:
+    border-color 140ms ease,
+    background-color 140ms ease,
+    box-shadow 140ms ease;
+}
+.dp-trigger:hover:not(:disabled) {
+  border-color: var(--color-zinc-600);
+}
+.dp-trigger[data-open="true"] {
+  border-color: color-mix(in srgb, #7393bc 62%, var(--color-zinc-700));
+  box-shadow: 0 0 0 3px #7393bc14;
+}
+.dp-trigger:focus-visible {
+  outline: none;
+  border-color: #7393bc;
+  box-shadow: 0 0 0 3px #7393bc1a;
+}
+.dp-trigger:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.dp-value {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  color: var(--color-zinc-100);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.dp-value[data-empty="true"] {
+  color: var(--color-zinc-500);
+}
+.dp-weekday {
+  flex: none;
+  color: var(--muted);
+  font-size: 10.5px;
+}
+.dp-icon {
+  flex: none;
+  color: var(--color-zinc-500);
+  transition: color 140ms ease;
+}
+.dp-trigger:hover:not(:disabled) .dp-icon,
+.dp-trigger[data-open="true"] .dp-icon {
+  color: var(--color-zinc-300);
+}
+
+/* 面板：popover 自带 position:fixed / inset:0 / margin:auto，这里全部覆盖 */
+.dp-panel {
+  position: fixed;
+  z-index: 80;
+  inset: auto;
+  width: 268px;
+  padding: 9px 9px 7px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: var(--surface);
+  box-shadow:
+    0 24px 54px -20px #00000080,
+    0 2px 8px -3px #00000033;
+  color: var(--color-zinc-200);
+  user-select: none;
+}
+/* 不需要给日历配一层遮罩：它只是输入框的延伸 */
+.dp-panel::backdrop {
+  display: none;
+}
+html[data-theme="light"] .dp-panel {
+  box-shadow:
+    0 24px 48px -26px #1b1a153d,
+    0 2px 8px -4px #1b1a151a;
+}
+.dp-panel[data-placed="false"] {
+  visibility: hidden;
+}
+.dp-panel[data-placed="true"] {
+  animation: dp-pop 120ms ease-out;
+}
+@keyframes dp-pop {
+  from {
+    opacity: 0;
+    transform: translateY(-3px);
+  }
+}
+
+/* 头部：翻页按钮 + 年月标题（点标题逐级切换到月 / 年） */
+.dp-head {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  padding: 0 1px 6px;
+}
+.dp-nav {
+  display: grid;
+  width: 22px;
+  height: 22px;
+  flex: none;
+  place-items: center;
+  border-radius: 6px;
+  color: var(--color-zinc-500);
+  transition:
+    background-color 120ms ease,
+    color 120ms ease;
+}
+.dp-nav:hover {
+  background: var(--hover);
+  color: var(--color-zinc-100);
+}
+.dp-title {
+  height: 22px;
+  min-width: 0;
+  flex: 1;
+  padding: 0 4px;
+  border-radius: 6px;
+  color: var(--color-zinc-100);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.dp-title:hover:not(:disabled) {
+  background: var(--hover);
+}
+.dp-title:disabled {
+  cursor: default;
+}
+
+/* 星期表头 + 日期格 */
+.dp-week {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 2px;
+  padding-bottom: 2px;
+}
+.dp-week span {
+  display: grid;
+  height: 16px;
+  place-items: center;
+  color: var(--color-zinc-500);
+  font-size: 9.5px;
+  font-weight: 500;
+}
+.dp-week span[data-weekend="true"] {
+  color: color-mix(in srgb, var(--color-zinc-500) 72%, var(--color-red-400));
+}
+.dp-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 2px;
+}
+.dp-day {
+  position: relative;
+  display: grid;
+  height: 30px;
+  place-items: center;
+  border-radius: 8px;
+  color: var(--color-zinc-200);
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+  transition:
+    background-color 110ms ease,
+    color 110ms ease;
+}
+.dp-day:hover {
+  background: var(--hover);
+  color: var(--color-zinc-100);
+}
+.dp-day[data-outside="true"] {
+  color: var(--color-zinc-600);
+}
+.dp-day[data-outside="true"]:hover {
+  color: var(--color-zinc-400);
+}
+/* 到期日场景：已经过去的日子压暗，仍然可选（补录历史额度时用得上） */
+.dp-day[data-past="true"]:not([data-selected="true"]) {
+  color: var(--color-zinc-600);
+}
+/* 今天：底部一个小圆点，不与「已选」抢视觉 */
+.dp-day[data-today="true"]::after {
+  content: "";
+  position: absolute;
+  bottom: 4px;
+  width: 3px;
+  height: 3px;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0.55;
+}
+.dp-day[data-selected="true"] {
+  background: var(--color-accent);
+  color: var(--color-accent-foreground);
+  font-weight: 600;
+}
+.dp-day[data-selected="true"]:hover {
+  background: color-mix(in srgb, var(--color-accent) 88%, var(--workspace));
+}
+.dp-day[data-selected="true"][data-today="true"]::after {
+  opacity: 0.8;
+}
+.dp-day:focus-visible,
+.dp-unit:focus-visible,
+.dp-nav:focus-visible,
+.dp-title:focus-visible,
+.dp-chip:focus-visible,
+.dp-link:focus-visible {
+  outline: 2px solid #7393bc;
+  outline-offset: 1px;
+}
+
+/* 月 / 年视图 */
+.dp-units {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+  padding: 1px 0 3px;
+}
+/* 年份一屏 10 个：5 列 × 2 行，比 3 列 × 4 行更紧凑 */
+.dp-units.is-years {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+.dp-unit {
+  height: 34px;
+  border-radius: 8px;
+  color: var(--color-zinc-300);
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+  transition:
+    background-color 110ms ease,
+    color 110ms ease;
+}
+.dp-unit:hover {
+  background: var(--hover);
+  color: var(--color-zinc-100);
+}
+.dp-unit[data-active="true"] {
+  background: var(--color-accent);
+  color: var(--color-accent-foreground);
+  font-weight: 600;
+}
+
+/* 快捷档位：到期日基本是「从今天起 N 个月」，省去翻日历 */
+.dp-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 6px 1px 0;
+}
+.dp-chip {
+  height: 21px;
+  padding: 0 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface-soft);
+  color: var(--color-zinc-400);
+  font-size: 10px;
+  transition:
+    border-color 110ms ease,
+    background-color 110ms ease,
+    color 110ms ease;
+}
+.dp-chip:hover {
+  border-color: color-mix(in srgb, var(--color-zinc-400) 32%, var(--line));
+  background: var(--hover);
+  color: var(--color-zinc-100);
+}
+
+/* 底部：今天 / 清除 */
+.dp-foot {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-top: 5px;
+  padding-top: 5px;
+  border-top: 1px solid var(--line);
+}
+.dp-link {
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 6px;
+  color: var(--color-zinc-400);
+  font-size: 10.5px;
+  transition:
+    background-color 110ms ease,
+    color 110ms ease;
+}
+.dp-link:hover {
+  background: var(--hover);
+  color: var(--color-zinc-100);
+}
+.dp-link[data-tone="danger"]:hover {
+  color: var(--color-red-400);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dp-panel[data-placed="true"] {
+    animation: none;
+  }
+}

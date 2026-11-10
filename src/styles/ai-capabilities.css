@@ -1,0 +1,892 @@
+/* MCP 与 Skills 页面：页面骨架、按钮、表单，以及能力库自身用到的控件。 */
+.capability-page {
+  display: flex;
+  width: 100%;
+  max-width: var(--page-max);
+  margin: 0 auto;
+  flex-direction: column;
+  gap: var(--page-gap);
+  padding: var(--page-pad-top) var(--page-pad-x) var(--page-pad-bottom);
+  color: var(--color-zinc-200);
+}
+/* 按钮样式只作用于能力库正文（.capability-panel）。
+   以前写成 `.capability-page button`，把页头里共用的 <PageHeader /> 也一起套上了：
+   页签被撑成一颗颗带边框的方按钮（.proxy-page-tab 的透明底、8px 圆角被覆盖），
+   和代理 / 设置页的分段式页签对不上。 */
+.capability-panel button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px solid var(--color-zinc-700);
+  background: var(--color-zinc-800);
+  border-radius: 9px;
+  padding: 8px 12px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.capability-panel button:hover:not(:disabled) {
+  border-color: var(--color-zinc-500);
+}
+.capability-panel button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.capability-page .hub-primary {
+  background: var(--color-zinc-200);
+  color: var(--color-zinc-950);
+  border-color: transparent;
+}
+.capability-page label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-size: 12px;
+  color: var(--color-zinc-400);
+  margin: 13px 0;
+}
+.capability-page input:not([type="checkbox"]),
+.capability-page select,
+.capability-page textarea {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--color-zinc-700);
+  border-radius: 8px;
+  background: var(--color-zinc-950);
+  padding: 9px 11px;
+  color: var(--color-zinc-200);
+  font-size: 12px;
+  outline-offset: 3px;
+}
+.capability-page textarea {
+  resize: vertical;
+}
+.capability-page a {
+  font-size: 12px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.hub-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+.hub-hint {
+  font-size: 11px !important;
+  line-height: 1.85;
+  color: var(--color-zinc-500);
+  margin: 16px 0;
+}
+.hub-notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 16px;
+  border: 1px solid #6ba38a55;
+  border-radius: 11px;
+  background: #5a9b8210;
+  font-size: 12px;
+  line-height: 1.7;
+  margin: 12px 0 20px;
+  white-space: pre-wrap;
+}
+.hub-notice.is-error {
+  border-color: #cf665d66;
+  color: #ba5d52;
+}
+.hub-subtabs {
+  display: flex;
+  gap: 7px;
+  margin-bottom: 20px;
+}
+.hub-subtabs button {
+  background: transparent;
+}
+.hub-subtabs button.is-active {
+  background: var(--color-zinc-800);
+  color: var(--color-zinc-100);
+}
+.hub-editor {
+  border: 1px solid var(--color-zinc-800);
+  background: var(--color-zinc-900);
+  border-radius: 17px;
+  padding: 22px;
+  min-width: 0;
+  margin-bottom: 20px;
+}
+.hub-editor header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+.hub-editor h2 {
+  font-size: 17px;
+  font-weight: 650;
+  margin: 10px 0 12px;
+}
+.hub-empty {
+  padding: 45px 20px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--color-zinc-400);
+  line-height: 2;
+}
+.hub-empty h2 {
+  font-size: 20px;
+  color: var(--color-zinc-200);
+  margin: 10px 0;
+}
+@media (max-width: 1050px) {
+  .capability-page {
+    padding: 22px;
+  }
+}
+
+/* 更新预览：文件与字段级差异，以及冲突处理的三选一。 */
+.capability-changes {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 14px 0;
+  padding: 0;
+  list-style: none;
+  font-size: 12px;
+}
+.capability-changes li {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
+  padding: 7px 10px;
+  border: 1px solid var(--color-zinc-800);
+  border-radius: 8px;
+  background: var(--color-zinc-950);
+}
+.capability-changes code {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--color-zinc-300);
+}
+.capability-changes small {
+  flex: none;
+  color: var(--color-zinc-500);
+}
+.capability-changes li[data-status="added"] code {
+  color: #7fb08f;
+}
+.capability-changes li[data-status="removed"] code {
+  color: #cf665d;
+}
+.capability-values {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 11px;
+}
+.capability-values del {
+  color: #cf665d;
+  text-decoration: none;
+  opacity: 0.8;
+}
+.capability-values ins {
+  color: #7fb08f;
+  text-decoration: none;
+}
+.capability-choices {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+.capability-choices label {
+  max-width: 320px;
+  margin: 4px 0 2px;
+}
+.capability-inline {
+  margin-left: 8px;
+  padding: 3px 8px !important;
+  font-size: 11px !important;
+}
+
+/* 浅色主题下差异色需要压深，否则在白底上几乎看不见。 */
+[data-theme="light"] .capability-changes li[data-status="added"] code,
+[data-theme="light"] .capability-values ins {
+  color: #2f7a52;
+}
+[data-theme="light"] .capability-changes li[data-status="removed"] code,
+[data-theme="light"] .capability-values del {
+  color: #b4433a;
+}
+
+/* ---------- 右侧扑克牌 ----------
+   只有「搜索 + 列表」这一段分成两栏，页头与右上角按钮保持整行，不被牌面挤窄。 */
+.capability-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(280px, 26vw, 360px);
+  column-gap: 26px;
+  align-items: stretch;
+}
+.capability-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  border: 1px solid var(--line, var(--color-zinc-800));
+  border-radius: 16px;
+  background: var(--surface, var(--color-zinc-900));
+  padding: 18px 20px 0;
+}
+.capability-main > .hub-empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 28px 20px;
+}
+.capability-card {
+  position: sticky;
+  top: 6px;
+  align-self: start;
+  width: 100%;
+  /* 固定 5:7 牌面：新增/编辑的元数据只重排内部，绝不用内容撑高卡片。 */
+  aspect-ratio: 5 / 7;
+  perspective: 1400px;
+  user-select: none;
+}
+.capability-card-body {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 620ms cubic-bezier(0.2, 0.72, 0.2, 1);
+  cursor: pointer;
+  border-radius: 16px;
+}
+.capability-card-body:focus-visible {
+  outline: 2px solid var(--color-zinc-500);
+  outline-offset: 4px;
+}
+.capability-card.is-flipped .capability-card-body {
+  transform: rotateY(180deg);
+}
+.capability-card-face {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 16px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+/* 背面：斜向菱格 + 内描边 + 四角花色 */
+.capability-card-back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-zinc-700);
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      transparent 0 9px,
+      rgba(255, 255, 255, 0.05) 9px 10px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent 0 9px,
+      rgba(255, 255, 255, 0.05) 9px 10px
+    ),
+    radial-gradient(circle at 50% 42%, #26262b, #17171a 72%);
+  box-shadow:
+    inset 0 0 0 5px rgba(255, 255, 255, 0.04),
+    inset 0 0 0 6px rgba(255, 255, 255, 0.09),
+    0 18px 36px -22px rgba(0, 0, 0, 0.65);
+  color: var(--color-zinc-300);
+}
+.capability-card-back::before {
+  content: "";
+  position: absolute;
+  inset: 9px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 11px;
+  pointer-events: none;
+}
+.capability-card-corner {
+  position: absolute;
+  font-size: 17px;
+  line-height: 1;
+  opacity: 0.5;
+}
+.capability-card-corner.is-tl {
+  top: 14px;
+  left: 16px;
+}
+.capability-card-corner.is-tr {
+  top: 14px;
+  right: 16px;
+}
+.capability-card-corner.is-bl {
+  bottom: 14px;
+  left: 16px;
+}
+.capability-card-corner.is-br {
+  bottom: 14px;
+  right: 16px;
+}
+.capability-card-corner.is-tr,
+.capability-card-corner.is-bl {
+  color: #c2645a;
+}
+.capability-card-seal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  padding: 20px 24px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.03);
+  text-align: center;
+}
+.capability-card-seal span {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.34em;
+  text-indent: 0.34em;
+  color: var(--color-zinc-100);
+}
+.capability-card-seal small {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--color-zinc-500);
+}
+/* 正面：能力库的展示信息，做成一张有内框与烫金线的收藏卡。 */
+.capability-card-front {
+  --card-front-ink: #f0e8da;
+  --card-front-muted: #b4a694;
+  --card-front-line: #ffffff24;
+  --card-front-accent: #d2a06e;
+  --card-front-solid: #1a1712;
+  --card-front-bg:
+    radial-gradient(ellipse at 18% -2%, #d2a06e1f, transparent 52%),
+    repeating-linear-gradient(135deg, #ffffff05 0 1px, transparent 1px 7px),
+    linear-gradient(155deg, #26221c, #15130f);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 18px 18px 16px;
+  border: 1px solid #564936;
+  background: var(--card-front-bg);
+  box-shadow:
+    inset 0 0 0 6px #ffffff05,
+    0 18px 36px -22px #000000a6;
+  color: var(--card-front-ink);
+  transform: rotateY(180deg);
+}
+.capability-card-front::before {
+  position: absolute;
+  inset: 7px;
+  border: 1px solid var(--card-front-line);
+  border-radius: 10px;
+  content: "";
+  pointer-events: none;
+}
+.capability-card-front::after {
+  position: absolute;
+  right: 6px;
+  bottom: 82px;
+  color: var(--card-front-ink);
+  content: "♠";
+  font-size: 132px;
+  line-height: 1;
+  opacity: 0.025;
+  pointer-events: none;
+  transform: rotate(-9deg);
+}
+.capability-card-front > * {
+  position: relative;
+  z-index: 1;
+}
+.capability-card-hero,
+.capability-card-story,
+.capability-card-footer {
+  display: flex;
+  flex-direction: column;
+}
+.capability-card-crest {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 122px;
+}
+.capability-card-crest-ring {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 92px;
+  height: 92px;
+  border: 1px solid var(--card-front-line);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 50% 38%,
+    color-mix(in srgb, var(--card-front-accent) 13%, transparent),
+    transparent 68%
+  );
+  box-shadow: inset 0 0 0 4px #ffffff05;
+  color: var(--card-front-accent);
+}
+.capability-card-crest-ring::before {
+  position: absolute;
+  inset: 7px;
+  border: 1px dashed var(--card-front-line);
+  border-radius: 50%;
+  content: "";
+}
+.capability-card-crest-icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border: 1px solid var(--card-front-line);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--card-front-accent) 7%, transparent);
+}
+.capability-card-crest small {
+  color: var(--card-front-muted);
+  font-size: 7.5px;
+  letter-spacing: 0.18em;
+}
+.capability-card-hero {
+  gap: 7px;
+}
+.capability-card-story {
+  gap: 14px;
+}
+.capability-card-footer {
+  gap: 7px;
+}
+.capability-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--card-front-muted);
+  font-size: 8.5px;
+  letter-spacing: 0.1em;
+}
+.capability-card-head > span:last-child {
+  color: var(--card-front-muted);
+  font-size: 8px;
+  letter-spacing: 0.05em;
+  opacity: 0.8;
+}
+.capability-card-type {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--card-front-accent);
+  font-size: 9px;
+  font-weight: 650;
+  letter-spacing: 0.14em;
+}
+.capability-card-type em {
+  color: var(--card-front-muted);
+  font-size: 8px;
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+}
+.capability-card-emblem {
+  display: grid;
+  width: 20px;
+  height: 20px;
+  place-items: center;
+  border: 1px solid var(--card-front-line);
+  border-radius: 50%;
+  color: var(--card-front-accent);
+}
+.capability-card-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 7px;
+  overflow-wrap: anywhere;
+  color: var(--card-front-ink);
+  font-size: 25px;
+  font-weight: 600;
+  letter-spacing: -0.8px;
+  line-height: 1.2;
+}
+.capability-card-realname {
+  color: var(--card-front-muted);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: 0;
+  opacity: 0.75;
+}
+.capability-card-meta {
+  color: var(--card-front-muted);
+  font-size: 10px;
+  letter-spacing: 0.03em;
+}
+.capability-card-id {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
+  margin-top: 1px;
+  border-top: 1px solid var(--card-front-line);
+  border-bottom: 1px solid var(--card-front-line);
+  padding: 6px 0;
+  color: var(--card-front-muted);
+  font-size: 8px;
+  letter-spacing: 0.12em;
+}
+.capability-card-id code {
+  flex: 1;
+  overflow: hidden;
+  color: var(--card-front-ink);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 9px;
+  letter-spacing: 0;
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.capability-card-field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.capability-card-ability {
+  margin-top: 1px;
+  border-left: 2px solid var(--card-front-accent);
+  padding-left: 10px;
+}
+.capability-card-label {
+  color: var(--card-front-muted);
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.capability-card-desc {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  color: var(--card-front-ink);
+  font-size: 12.5px;
+  font-weight: 500;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+.capability-card-detail {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  color: var(--card-front-muted);
+  font-size: 10.5px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+}
+.capability-card-shared {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.capability-card-rule {
+  position: relative;
+  display: block;
+  height: 1px;
+  margin: 1px 0 4px;
+  background: var(--card-front-line);
+}
+.capability-card-rule i {
+  position: absolute;
+  top: -2px;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  border: 1px solid var(--card-front-accent);
+  background: var(--card-front-solid);
+  transform: translateX(-50%) rotate(45deg);
+}
+.capability-card-shared > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.capability-card-agent {
+  border: 1px solid var(--card-front-line);
+  border-radius: 999px;
+  padding: 1px 7px;
+  color: var(--card-front-ink);
+  font-size: 8.5px;
+}
+.capability-card-shared em {
+  color: var(--card-front-muted);
+  font-size: 9px;
+  font-style: normal;
+}
+.capability-card-files {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 10.5px;
+}
+.capability-card-files li {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--color-zinc-400);
+}
+.capability-card-files code {
+  overflow: hidden;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.capability-card-files span {
+  flex: none;
+  color: var(--color-zinc-600);
+}
+.capability-card-files .is-more {
+  color: var(--color-zinc-600);
+}
+.capability-card-preview {
+  flex: 1;
+  min-height: 0;
+  margin: 0;
+  padding-top: 9px;
+  overflow: auto;
+  border-top: 1px dashed var(--color-zinc-700);
+  font-size: 11px;
+  line-height: 1.75;
+  color: var(--color-zinc-400);
+  overflow-wrap: anywhere;
+}
+.capability-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  margin-top: 1px;
+}
+.capability-card-tags span,
+.capability-card-tags a {
+  border: 1px solid var(--card-front-line);
+  border-radius: 999px;
+  padding: 1px 7px;
+  color: var(--card-front-muted);
+  font-size: 8.5px;
+  text-decoration: none;
+}
+.capability-card-tags a {
+  border-color: color-mix(
+    in srgb,
+    var(--card-front-accent) 36%,
+    var(--card-front-line)
+  );
+  color: var(--card-front-accent);
+}
+.capability-card-tags a:hover {
+  color: var(--card-front-ink);
+}
+/* SKILL.md 渲染出来的几种块 */
+.skill-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.skill-body p {
+  margin: 0;
+}
+.skill-heading {
+  font-weight: 650;
+  line-height: 1.4;
+  color: var(--color-zinc-200);
+}
+.skill-heading.is-h1 {
+  font-size: 14px;
+}
+.skill-heading.is-h2 {
+  font-size: 12.5px;
+}
+.skill-heading.is-h3 {
+  font-size: 11.5px;
+}
+.skill-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding-left: 15px;
+  list-style: disc;
+}
+ol.skill-list {
+  list-style: decimal;
+}
+.skill-code {
+  margin: 2px 0;
+  padding: 6px 8px;
+  overflow: auto;
+  border: 1px solid var(--color-zinc-800);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.045);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 9.5px;
+  line-height: 1.6;
+}
+.skill-code code {
+  padding: 0;
+  background: none;
+}
+.skill-quote {
+  margin: 0;
+  padding-left: 8px;
+  border-left: 2px solid var(--color-zinc-700);
+  color: var(--color-zinc-500);
+}
+.skill-body code {
+  padding: 1px 4px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.07);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 9.5px;
+}
+.skill-body strong {
+  font-weight: 600;
+  color: var(--color-zinc-200);
+}
+.capability-card-error {
+  font-size: 10.5px;
+  line-height: 1.6;
+  color: #cf665d;
+}
+.capability-card-files,
+.capability-card-preview {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-zinc-700) transparent;
+}
+.capability-card-files::-webkit-scrollbar,
+.capability-card-preview::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+.capability-card-files::-webkit-scrollbar-thumb,
+.capability-card-preview::-webkit-scrollbar-thumb {
+  border-radius: 2px;
+  background: var(--color-zinc-700);
+}
+.capability-card-files::-webkit-scrollbar-track,
+.capability-card-preview::-webkit-scrollbar-track {
+  background: transparent;
+}
+.capability-table tr[data-kind="skill"] {
+  cursor: pointer;
+}
+.capability-table tr[data-picked="true"] {
+  background: rgba(255, 255, 255, 0.045);
+}
+[data-theme="light"] .capability-card-back {
+  border-color: #cfc7b9;
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      transparent 0 9px,
+      rgba(90, 74, 52, 0.09) 9px 10px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent 0 9px,
+      rgba(90, 74, 52, 0.09) 9px 10px
+    ),
+    radial-gradient(circle at 50% 42%, #fdfaf4, #ebe3d6 74%);
+  box-shadow:
+    inset 0 0 0 5px rgba(90, 74, 52, 0.04),
+    inset 0 0 0 6px rgba(90, 74, 52, 0.09),
+    0 18px 36px -24px rgba(60, 48, 34, 0.42);
+  color: #3c352c;
+}
+[data-theme="light"] .capability-card-back::before {
+  border-color: rgba(90, 74, 52, 0.16);
+}
+[data-theme="light"] .capability-card-seal {
+  border-color: rgba(0, 0, 0, 0.12);
+  background: rgba(255, 255, 255, 0.6);
+}
+[data-theme="light"] .capability-card-seal span {
+  color: #2b2620;
+}
+[data-theme="light"] .capability-card-front {
+  --card-front-ink: #2b241c;
+  --card-front-muted: #7d6b56;
+  --card-front-line: #5a4a3424;
+  --card-front-accent: #98642f;
+  --card-front-solid: #fbf6ed;
+  --card-front-bg:
+    radial-gradient(ellipse at 18% -2%, #b9854b1f, transparent 52%),
+    repeating-linear-gradient(135deg, #5a4a3407 0 1px, transparent 1px 7px),
+    linear-gradient(155deg, #fffdf8, #efe4d3);
+  border-color: #d8c8b1;
+  box-shadow:
+    inset 0 0 0 6px #ffffff73,
+    0 20px 40px -26px #5a462e66;
+}
+[data-theme="light"] .capability-card-preview,
+[data-theme="light"] .capability-card-files li {
+  color: #4a423a;
+}
+[data-theme="light"] .capability-card-preview {
+  border-top-color: #ded7cb;
+}
+[data-theme="light"] .skill-heading,
+[data-theme="light"] .skill-body strong {
+  color: #1f1b16;
+}
+[data-theme="light"] .skill-code {
+  border-color: #e2dbcf;
+  background: rgba(90, 74, 52, 0.06);
+}
+[data-theme="light"] .skill-body code {
+  background: rgba(90, 74, 52, 0.09);
+}
+[data-theme="light"] .skill-quote {
+  border-left-color: #d8d0c2;
+  color: #6b6153;
+}
+[data-theme="light"] .capability-table tr[data-picked="true"] {
+  background: rgba(0, 0, 0, 0.035);
+}
+@media (prefers-reduced-motion: reduce) {
+  .capability-card-body {
+    transition: none;
+  }
+}
+/* 两栏至少要 1300px 才放得下：再窄表格会横向滚动，此时牌面回到列表上方。 */
+@media (max-width: 1299px) {
+  .capability-body {
+    display: flex;
+    flex-direction: column;
+  }
+  .capability-card {
+    order: -1;
+    position: static;
+    width: min(320px, 100%);
+    margin: 0 auto 20px;
+  }
+}

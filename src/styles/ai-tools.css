@@ -1,0 +1,566 @@
+/* AI 启动工具页：页面骨架与页头由共用变量 / <PageHeader /> 决定，
+   这里只保留卡组本身的网格与卡片样式。 */
+.ai-tools-page {
+  display: flex;
+  width: 100%;
+  max-width: var(--page-max);
+  margin: 0 auto;
+  flex-direction: column;
+  gap: var(--page-gap);
+  padding: var(--page-pad-top) var(--page-pad-x) var(--page-pad-bottom);
+  color: var(--color-zinc-100);
+}
+/* 用量与统计：与启动工具同一套页面骨架。 */
+.ai-stats-page {
+  display: flex;
+  width: 100%;
+  max-width: var(--page-max);
+  margin: 0 auto;
+  flex-direction: column;
+  gap: var(--page-gap);
+  padding: var(--page-pad-top) var(--page-pad-x) var(--page-pad-bottom);
+}
+/* 卡片数 / 环境门控写在页头的说明行里，这里只保留状态点的配色。 */
+.ai-tools-gate {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+}
+.ai-tools-gate i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-zinc-600);
+}
+.ai-tools-gate.is-ready {
+  color: var(--color-emerald-400);
+}
+.ai-tools-gate.is-ready i {
+  background: currentColor;
+}
+.ai-tools-gate.is-warning {
+  color: var(--color-amber-400);
+}
+.ai-tools-gate.is-warning i {
+  background: currentColor;
+}
+.ai-tools-page > [role="alert"],
+.ai-tools-page > #ai-tool-picker,
+.ai-tools-warning {
+  margin-bottom: 0;
+}
+.ai-tool-deck {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 344px);
+  align-items: start;
+  justify-content: start;
+  gap: 26px 24px;
+  padding: 4px 0 24px;
+}
+
+/* 卡片使用确定尺寸；详情在卡内滚动，数据量不参与卡片尺寸计算。 */
+.tool-playing-card {
+  --tool-ink: #c6c6c0;
+  --tool-solid: #62685f;
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-rows: 34px minmax(0, 1fr) 54px 44px;
+  gap: 14px;
+  box-sizing: border-box;
+  width: 344px;
+  min-width: 344px;
+  height: 520px;
+  padding: 22px;
+  border: 1px solid color-mix(in srgb, var(--tool-ink) 16%, var(--line));
+  border-radius: 20px;
+  background:
+    linear-gradient(
+      155deg,
+      color-mix(in srgb, var(--tool-ink) 5%, transparent),
+      transparent 48%
+    ),
+    var(--surface);
+  box-shadow:
+    0 2px 3px #00000008,
+    0 12px 28px #00000009;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+.tool-playing-card::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 7px;
+  border: 1px solid color-mix(in srgb, var(--tool-ink) 13%, var(--line));
+  border-radius: 14px;
+  pointer-events: none;
+}
+.tool-playing-card:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--tool-ink) 48%, var(--line));
+  box-shadow:
+    0 4px 8px #00000006,
+    0 17px 34px #00000012;
+}
+.tool-playing-card:focus-within {
+  border-color: var(--tool-ink);
+}
+.tool-playing-card[data-tool-card="claude"] {
+  --tool-ink: #ec9a7e;
+  --tool-solid: #a65339;
+}
+.tool-playing-card[data-tool-card="chatgpt"] {
+  --tool-ink: #7dc7af;
+  --tool-solid: #26725b;
+}
+.tool-playing-card[data-tool-card="gemini"],
+.tool-playing-card[data-tool-card="deepseek"] {
+  --tool-ink: #95acf0;
+  --tool-solid: #4c64ad;
+}
+.tool-playing-card[data-tool-card="antigravity"] {
+  --tool-ink: #b8a0e5;
+  --tool-solid: #77609a;
+}
+.tool-playing-card[data-tool-card="kimi"] {
+  --tool-ink: #a2c6a8;
+  --tool-solid: #4f7758;
+}
+html[data-theme="light"] .tool-playing-card {
+  --tool-ink: #676e63;
+}
+html[data-theme="light"] .tool-playing-card[data-tool-card="claude"] {
+  --tool-ink: #b76749;
+}
+html[data-theme="light"] .tool-playing-card[data-tool-card="chatgpt"] {
+  --tool-ink: #2d7b63;
+}
+html[data-theme="light"] .tool-playing-card[data-tool-card="gemini"],
+html[data-theme="light"] .tool-playing-card[data-tool-card="deepseek"] {
+  --tool-ink: #5975ba;
+}
+html[data-theme="light"] .tool-playing-card[data-tool-card="antigravity"] {
+  --tool-ink: #80629d;
+}
+html[data-theme="light"] .tool-playing-card[data-tool-card="kimi"] {
+  --tool-ink: #527c5e;
+}
+.tool-card-topline {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+}
+.tool-card-configured {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--tool-ink) 6%, transparent);
+  color: var(--color-zinc-500);
+  font-size: 10px;
+}
+.tool-card-configured i {
+  height: 4px;
+  width: 4px;
+  border-radius: 50%;
+  background: var(--color-zinc-600);
+}
+.tool-card-configured.is-configured {
+  color: var(--tool-ink);
+}
+.tool-card-configured.is-configured i {
+  background: currentColor;
+}
+.tool-card-detail-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  height: 28px;
+  margin-left: auto;
+  padding: 0 7px;
+  border-radius: 7px;
+  color: var(--color-zinc-500);
+  font-size: 10px;
+}
+.tool-card-detail-toggle:hover {
+  background: var(--hover);
+  color: var(--tool-ink);
+}
+.tool-card-view-actions {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  margin-left: auto;
+}
+.tool-card-view-actions .tool-card-detail-toggle {
+  margin-left: 0;
+}
+.tool-card-account-toggle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 28px;
+  padding: 0 7px;
+  border-radius: 7px;
+  color: var(--color-zinc-500);
+  font-size: 10px;
+}
+.tool-card-account-toggle:hover,
+.tool-card-account-toggle[aria-pressed="true"] {
+  color: var(--tool-ink);
+  background: color-mix(in srgb, var(--tool-ink) 9%, transparent);
+}
+.tool-card-remove {
+  display: grid;
+  place-items: center;
+  width: 25px;
+  height: 28px;
+  border-radius: 7px;
+  color: var(--color-zinc-500);
+}
+.tool-card-remove:hover {
+  background: var(--hover);
+  color: var(--color-red-400);
+}
+.tool-card-remove:disabled {
+  opacity: 0.4;
+}
+.tool-card-body {
+  min-width: 0;
+  min-height: 0;
+}
+.tool-card-face {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  gap: 10px;
+}
+.tool-card-face[hidden],
+.tool-card-details[hidden] {
+  display: none;
+}
+.tool-card-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  text-align: center;
+}
+.tool-card-bot-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 106px;
+  height: 102px;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse,
+    color-mix(in srgb, var(--tool-ink) 9%, transparent),
+    transparent 70%
+  );
+  color: var(--tool-ink);
+}
+.tool-card-bot-stage .agent-bot {
+  position: relative;
+}
+.tool-card-maker {
+  margin-top: 7px;
+  font-size: 9px;
+  letter-spacing: 0.24em;
+  color: var(--tool-ink);
+}
+.tool-card-hero h2 {
+  margin-top: 3px;
+  color: var(--color-zinc-100);
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.6px;
+  line-height: 1.35;
+}
+.tool-card-tagline {
+  max-width: 100%;
+  margin-top: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--color-zinc-500);
+  font-size: 10px;
+}
+.tool-card-overview {
+  min-height: 96px;
+  border-top: 1px solid color-mix(in srgb, var(--tool-ink) 15%, var(--line));
+  padding-top: 13px;
+}
+.tool-card-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.tool-card-metrics > div {
+  background: transparent;
+  border-radius: 0;
+  padding: 0 10px;
+}
+.tool-card-metrics > div:first-child {
+  padding-left: 0;
+}
+.tool-card-metrics > div + div {
+  border-left: 1px solid var(--line);
+}
+.tool-card-metrics > div > div:first-child {
+  font-size: 10px;
+}
+.tool-card-metrics > div > div:last-child {
+  margin-top: 4px;
+  color: var(--color-zinc-200);
+  font-size: 19px;
+  font-weight: 500;
+  letter-spacing: -0.6px;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+.tool-card-quotas {
+  display: grid;
+  gap: 4px;
+  margin-top: 8px;
+}
+.tool-card-quotas > p,
+.tool-card-overview-note {
+  margin-top: 6px;
+  color: var(--color-zinc-500);
+  font-size: 9px;
+}
+.tool-card-quotas > p {
+  margin-top: 0;
+  font-size: 9px;
+}
+/* 额度条本身由 ProviderQuotaPanel 的 compact 形态渲染（provider-accounts.css），
+   卡面这里只保留区块间距与说明行的字号。 */
+.tool-card-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 6px;
+  text-align: center;
+}
+.tool-card-empty > svg {
+  color: var(--tool-ink);
+}
+.tool-card-empty > span {
+  color: var(--color-zinc-300);
+  font-size: 12px;
+}
+.tool-card-empty > p {
+  color: var(--color-zinc-500);
+  font-size: 10px;
+  line-height: 1.7;
+}
+/* 空状态里的额度落款跟有读数时一样大，两种状态切换时区块不跳高。 */
+.tool-card-empty > .provider-quota-caption {
+  font-size: 9px;
+  line-height: 1.4;
+}
+.tool-card-details {
+  height: 100%;
+  overflow: hidden auto;
+  padding-right: 5px;
+  scrollbar-gutter: stable;
+  overscroll-behavior: contain;
+  user-select: text;
+}
+.tool-card-detail-heading {
+  margin-bottom: 16px;
+}
+.tool-card-detail-heading > span {
+  color: var(--tool-ink);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+}
+.tool-card-detail-heading h2 {
+  margin: 4px 0;
+  color: var(--color-zinc-100);
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.4px;
+}
+.tool-card-detail-heading > p {
+  color: var(--color-zinc-500);
+  font-size: 11px;
+}
+.tool-card-details .tool-usage-panel {
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.tool-card-details .tool-usage-panel > div:first-child {
+  flex-wrap: wrap;
+  row-gap: 3px;
+}
+.tool-card-details .tool-usage-panel > p {
+  font-size: 11px;
+  line-height: 1.7;
+}
+.tool-card-details .tool-usage-panel button {
+  min-height: 26px;
+}
+.tool-card-accounts .ui-panel {
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.tool-card-accounts .ui-panel > h2 {
+  font-size: 14px;
+}
+.tool-card-accounts .ui-panel > p,
+.tool-card-accounts > div > p {
+  overflow-wrap: anywhere;
+  font-size: 11px;
+  line-height: 1.8;
+}
+.tool-card-accounts .grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+.tool-card-accounts button {
+  font-size: 11px;
+  padding: 6px 9px;
+}
+.tool-card-accounts .account-help {
+  color: var(--color-zinc-500);
+  font-size: 11px;
+  line-height: 1.8;
+}
+.account-help summary {
+  cursor: pointer;
+  border-radius: 4px;
+}
+.account-help[open] > summary {
+  margin-bottom: 10px;
+}
+.tool-card-accounts input:not([type="checkbox"]) {
+  min-width: 0;
+  font-size: 12px;
+}
+.tool-card-shortcut {
+  min-width: 0;
+  padding: 10px 0 0;
+  border-top: 1px solid var(--line);
+}
+.tool-card-shortcut-heading {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 6px 10px;
+  align-items: center;
+}
+.tool-card-shortcut-heading > span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--color-zinc-500);
+  font-size: 10px;
+}
+.tool-card-shortcut-heading > button {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--tool-ink);
+  font-size: 10px;
+  border-radius: 4px;
+}
+.tool-card-shortcut-heading > button:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.tool-card-shortcut-heading > div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 5px 8px;
+}
+.tool-card-shortcut-heading > div > button {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--tool-ink);
+  font-size: 10px;
+  white-space: nowrap;
+  border-radius: 4px;
+}
+.tool-card-shortcut-heading > div > button:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.tool-card-shortcut-heading > div > button:disabled {
+  opacity: 0.4;
+}
+.tool-card-shortcut > p {
+  margin-top: 7px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--color-zinc-500);
+  font-size: 10px;
+  user-select: text;
+}
+.tool-card-footer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.tool-card-message {
+  flex: 1;
+  min-width: 0;
+  max-height: 40px;
+  overflow-y: auto;
+  overflow-wrap: anywhere;
+  font-size: 10px;
+  line-height: 1.65;
+}
+.tool-card-launch {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: 98px;
+  height: 38px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  color: #fff;
+  background: var(--tool-solid);
+  font-size: 12px;
+  font-weight: 500;
+}
+.tool-card-launch:hover:enabled {
+  filter: brightness(1.1);
+}
+.tool-card-launch:active:enabled {
+  filter: brightness(0.94);
+}
+.tool-card-launch:disabled {
+  color: var(--color-zinc-500);
+  background: var(--surface-soft);
+  border-color: var(--line);
+}
+.tool-playing-card.is-detail {
+  background: var(--surface);
+}
+@media (prefers-reduced-motion: reduce) {
+  .tool-playing-card {
+    transition: none;
+  }
+  .tool-playing-card:hover {
+    transform: none;
+  }
+}

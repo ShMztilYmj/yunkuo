@@ -1,0 +1,171 @@
+.browser-bot {
+  --browser-bot-eye: #354d50;
+  display: inline-flex;
+  flex: none;
+  pointer-events: none;
+}
+.browser-bot > svg {
+  display: block;
+  overflow: visible;
+}
+.browser-bot-body {
+  transform-origin: 48px 52px;
+  animation: browser-bot-breathe 6s ease-in-out infinite;
+}
+.browser-bot-eyes {
+  fill: var(--browser-bot-eye);
+  transform-origin: 48px 50px;
+  animation: browser-bot-blink 6.8s linear infinite;
+}
+.browser-bot-shadow {
+  transform-origin: 48px 85px;
+  animation: browser-bot-shadow 5.6s ease-in-out infinite;
+}
+.browser-bot-face > path {
+  fill: none;
+  stroke: var(--browser-bot-eye);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+.browser-bot-mouth {
+  opacity: 0.6;
+}
+.browser-bot-smile,
+.browser-bot-worry,
+.browser-bot-happy-eyes,
+.browser-bot-breeze {
+  opacity: 0;
+}
+.browser-bot[data-browser-bot="checking"] .browser-bot-body {
+  animation: browser-bot-focus 1.8s ease-in-out infinite;
+}
+.browser-bot[data-browser-bot="checking"] .browser-bot-eyes {
+  animation: browser-bot-look 1.8s ease-in-out infinite;
+}
+.browser-bot[data-browser-bot="checking"] .browser-bot-breeze {
+  animation: browser-bot-breeze 1.6s ease-out infinite;
+}
+.browser-bot[data-browser-bot="passed"] .browser-bot-body {
+  animation: browser-bot-hello 0.85s ease-in-out both;
+}
+.browser-bot[data-browser-bot="passed"]
+  :is(.browser-bot-eyes, .browser-bot-mouth) {
+  opacity: 0;
+}
+.browser-bot[data-browser-bot="passed"]
+  :is(.browser-bot-happy-eyes, .browser-bot-smile) {
+  opacity: 1;
+}
+.browser-bot[data-browser-bot="attention"] .browser-bot-body {
+  animation: browser-bot-tilt 5s ease-in-out infinite;
+}
+.browser-bot[data-browser-bot="attention"] .browser-bot-mouth {
+  opacity: 0;
+}
+.browser-bot[data-browser-bot="attention"] .browser-bot-worry {
+  opacity: 0.8;
+}
+.browser-bot[data-browser-bot="unavailable"] {
+  opacity: 0.5;
+}
+.browser-bot[data-browser-bot="unavailable"] * {
+  animation: none !important;
+}
+.browser-bot[data-browser-bot="unavailable"] .browser-bot-eyes {
+  transform: scaleY(0.2);
+}
+.browser-bot[data-paused="true"] * {
+  animation-play-state: paused !important;
+}
+@keyframes browser-bot-breathe {
+  0%,
+  100% {
+    transform: translateY(0) scale(1, 0.99);
+  }
+  50% {
+    transform: translateY(-2px) scale(0.99, 1.01);
+  }
+}
+@keyframes browser-bot-shadow {
+  0%,
+  100% {
+    transform: scaleX(1);
+    opacity: 0.13;
+  }
+  50% {
+    transform: scaleX(0.9);
+    opacity: 0.08;
+  }
+}
+@keyframes browser-bot-blink {
+  0%,
+  40%,
+  44%,
+  74%,
+  78%,
+  100% {
+    transform: scaleY(1);
+  }
+  42%,
+  76% {
+    transform: scaleY(0.13);
+  }
+}
+@keyframes browser-bot-focus {
+  0%,
+  100% {
+    transform: translateY(-1px) rotate(-2deg);
+  }
+  50% {
+    transform: translateY(-3px) rotate(2deg);
+  }
+}
+@keyframes browser-bot-look {
+  0%,
+  100% {
+    transform: translateX(-2px) scaleY(0.85);
+  }
+  50% {
+    transform: translateX(2px) scaleY(1);
+  }
+}
+@keyframes browser-bot-breeze {
+  0% {
+    transform: translateX(-4px);
+    opacity: 0;
+  }
+  40% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateX(3px);
+    opacity: 0;
+  }
+}
+@keyframes browser-bot-hello {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  25% {
+    transform: translateY(-4px) rotate(-5deg);
+  }
+  65% {
+    transform: translateY(-1px) rotate(4deg);
+  }
+}
+@keyframes browser-bot-tilt {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  30%,
+  65% {
+    transform: rotate(-5deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .browser-bot * {
+    animation: none !important;
+  }
+}
